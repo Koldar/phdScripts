@@ -8,7 +8,10 @@ import logging
 def main():
 
     parser = argparse.ArgumentParser(prog="Crop Eps", description="""
-    Allows you to remove whitespace margin from an EPS file
+    Allows you to remove whitespace margin from an EPS file.
+
+    The script requires:
+     * mv, rm, epstopdf, pdfcrop, pdftops
     """)
 
     parser.add_argument("--input", type=str, required=True, help="""
