@@ -10,8 +10,8 @@ from typing import Iterable, Tuple, Dict
 
 import yaml
 
-FORMAT_WHOENIG = "whoenig version 1"
-FORMAT_MOVINGAI = "movingai version 1"
+FORMAT_WHOENIG = "whoenig_1.0"
+FORMAT_MOVINGAI = "movingai_1.0"
 
 
 def read_lines_in_file(filename: str) -> str:
@@ -64,12 +64,12 @@ class WhoenigMapFormat(AbstractMapFormat):
             try:
                 representation = yaml.load(f)
                 result = WhoenigMapFormat(
-                    width=representation['map']['dimensions'][1],
-                    height=representation['map']['dimensions'][0],
+                    width=representation['map']['dimensions'][0],
+                    height=representation['map']['dimensions'][1],
                     fill=basecost,
                 )
                 for obs in representation['map']['obstacles']:
-                    y, x = obs
+                    x, y = obs
                     logging.debug(f"obs is {obs} ({type(obs)})")
                     result.set_cell_value(y, x, float('+inf'))
                 return result
@@ -79,11 +79,11 @@ class WhoenigMapFormat(AbstractMapFormat):
     def encode(self) -> "str":
         result = []
         result.append("map:")
-        result.append(f"   dimensions: [{self.height()}, {self.width()}]")
+        result.append(f"   dimensions: [{self.width()}, {self.height()}]")
         result.append("    obstacles:")
         for y, x, value in self.cells():
             if math.isinf(value):
-                result.append(f"    - !!python/tuple [{y},{x}]")
+                result.append(f"    - !!python/tuple [{x},{y}]")
         return '\n'.join(result)
 
 
@@ -183,10 +183,10 @@ def main():
     parser.add_argument("--output", type=str, required=True, help="""
         Output map file you wish to create
     """)
-    parser.add_argument("--input_format", type=str, required=True, help="""
-        Represents the format of the input file. Allowed values are:
-        - movingai version 1
-        - whoenig version 1
+    parser.add_argument("--input_format", type=str, required=True, help=f"""
+        Represents the format of the input file. Allowed values are:\n\n
+        - {FORMAT_MOVINGAI}\n\n
+        - {FORMAT_WHOENIG}\n\n
     """)
     parser.add_argument("--output_format", type=str, required=True, help="""
         Represents the format of the output file. Allowed values are the same of "input_format"
