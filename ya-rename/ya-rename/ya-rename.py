@@ -16,7 +16,9 @@ def main():
         directory where all the files needs to be replaced. Default to cuyrrent working directory
     """)
     parser.add_argument("--regex", required=True, type=str, help="""
-        Python regex (with capturing groups). We will replace the matched regex with something else
+        Python regex (with capturing groups). We will replace the matched regex with something else. It is best to put this parameter using single quotes, not double quotes:
+        the reason is that in scripts like bash double quote evaluate symbols like $ inside the string, while single quotes don't. So prefer writing
+        --regex='.*\.csv' instead of ".*\.csv"
     """)
     parser.add_argument("--replace", required=True, type=str, help="""
         Python replacement of the regex. use $i to replace capturing group (i is a number starting from 1)
