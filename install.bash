@@ -5,7 +5,6 @@ OUTPUT_DIRECTORY="/usr/local/bin"
 
 for f in $FILES
 do
-	#echo "handling ${f}..."
 	if test -d $f
 	then
 		continue
@@ -26,9 +25,10 @@ do
 	then
 		#it can be executed. move it to /usr/local/bin
 		f_basename=$(basename $f)
-		echo "installing ${f_basename}..."
-		sudo cp -v $f ${OUTPUT_DIRECTORY}/${f_basename}
-		sudo chmod -v o+x ${OUTPUT_DIRECTORY}/${f_basename}
+		f_basename_no_extension=$(echo ${f_basename%%.*})
+		echo "installing ${f_basename_no_extension}..."
+		sudo cp -v $f ${OUTPUT_DIRECTORY}/${f_basename_no_extension}
+		sudo chmod -v o+x ${OUTPUT_DIRECTORY}/${f_basename_no_extension}
 	fi
 done
 
