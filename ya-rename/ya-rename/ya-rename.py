@@ -3,6 +3,7 @@
 import argparse
 import os
 import re
+import shutil
 import sys
 
 import logging
@@ -63,7 +64,7 @@ def main():
         if verbose:
             logging.info(f"changing \"{filename}\" to \"{new_filename}\"")
         if not simulate:
-            if os.path.is_file(new_filename):
+            if os.path.isfile(new_filename):
                 raise ValueError(f"filename \"{filename}\" should become \"{new_filename}\" but it already exists!")
             if copy_instead:
                 os.rename(filename, new_filename)
