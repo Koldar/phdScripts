@@ -67,9 +67,9 @@ def main():
             if os.path.isfile(new_filename):
                 raise ValueError(f"filename \"{filename}\" should become \"{new_filename}\" but it already exists!")
             if copy_instead:
-                os.rename(filename, new_filename)
-            else:
                 shutil.copyfile(filename, new_filename)
+            else:
+                os.rename(filename, new_filename)
                 
         else:
             if copy_instead:
