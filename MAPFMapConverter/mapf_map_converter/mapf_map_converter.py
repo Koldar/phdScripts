@@ -171,9 +171,9 @@ def main():
     
     python3.6 -m MAPFMapConverter \
         --input="hrt201n.map" \
-        --input_format="movingai version 1" \
+        --input_format="movingai_1.0" \
         --output="hrt201n.yaml" \
-        --output_format="whoenig version 1" \
+        --output_format="whoenig_1.0" \
         --movingai_converter="{'.':1000, '@':float('+inf'), 'T':2000}"
     """)
 
