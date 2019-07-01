@@ -26,6 +26,10 @@ do
 		#echo "${f} is inside a directory starting with '.'. Continue"
 		continue
 	fi
+	if [[ $f =~ "structures"]]
+	then
+		continue
+	fi
 	exec=$(stat --format "%A" ${f} | head -c 10 | tail -c 1)
 	if test ${exec} == "x"
 	then
