@@ -1,0 +1,4 @@
+# visual studio
+.vscode/
+# cmake
+build/

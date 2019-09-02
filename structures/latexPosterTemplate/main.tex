@@ -1,0 +1,67 @@
+
+\documentclass[%
+    25pt, a1paper, portrait,%
+]{tikzposter}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PACKAGES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[english]{babel}
+\usepackage{amsmath, amsthm, amssymb, latexsym}
+\usepackage[utf8]{inputenc}
+\usepackage{etoolbox}
+\usepackage{xparse}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usepackage{blindtext}
+\usepackage{geometry}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TITLE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{Poster Title}
+\author{Poster author}
+\date{\today}
+\institute{Poster Organization}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% STYLE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usetheme{Autumn}
+\usecolorstyle[colorPalette=BrownBlueOrange]{Germany}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% configuration of tikzposter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%remove logo https://tex.stackexchange.com/a/263278/145331
+\tikzposterlatexaffectionproofoff
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% DOCUMENT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+    \maketitle
+    
+    \block{~}{%
+        %abstract
+    }
+
+    \begin{columns}
+        \column{0.3}
+            \block{Title block}{%
+                Body block
+            }
+        
+        \column{0.7}
+            \block{Title block}{%
+                Body block
+            }    
+    \end{columns}
+    
+\end{document}
