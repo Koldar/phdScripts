@@ -17,3 +17,8 @@ To install all script in one go, just call:
 ```
 ./install
 ```
+
+Additional Information
+======================
+
+In "installations" you can find several scripts conrtaining the installations of normal stuff I've used. Choose one and execute it to install it automatically on your pc (sudo may be required)
