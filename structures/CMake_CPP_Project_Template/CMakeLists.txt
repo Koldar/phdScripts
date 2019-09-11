@@ -41,7 +41,8 @@ set(CMAKE_FILE_ALTERED_COMMAND "")
 # - 1.4: "make install/uninstall" works without root access; Use U_INSTALL_DIRECTORY to alter installation directory; refactored  messages
 # - 1.5: ease to tweak log in cmake
 # - 1.6: fmax-errors=1 isntead of -Wfatal-errors
-set(CMAKE_FILE_BUILDING_PROCESS_VERSION "1.6")
+# - 1.7: add done message at the end of successful compilation
+set(CMAKE_FILE_BUILDING_PROCESS_VERSION "1.7")
 #The place where all the stuff created by "sudo make install" will be positioned"
 #Leave it if you don't want to change the behaviour. Can be overriden by U_INSTALL_DIRECTORY. For example: "-DU_INSTALL_DIRECTORY=~/usr"
 #(no end slash!).

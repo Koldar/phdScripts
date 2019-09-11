@@ -3,8 +3,8 @@
 include_directories("../include")
 #you might want to add the sources via the following command: set(SOURCES src/mainapp.cpp src/Student.cpp)
 #but with GLOB is all much easier; include in the build all the content filtered by the pattern
-file(GLOB SOURCES "*.c")
-file(GLOB HEADERS "../include/*.h")
+file(GLOB SOURCES "*.cpp")
+file(GLOB HEADERS "../include/*.hpp")
 
 if(${THEPROJECT_OUTPUT} STREQUAL "EXE")
     add_executable(${THEPROJECT_NAME} ${SOURCES})
@@ -80,3 +80,11 @@ add_custom_target(uninstall
     COMMENT "Removes everything installed by sudo make install"
     VERBATIM
 )
+
+####################### DONE MESSAGE ############################
+
+add_custom_target(FinalMainMessage ALL
+    ${CMAKE_COMMAND} -E cmake_echo_color --green --bold "========================== Compilation is successful! =========================="
+    COMMENT "Final Main Message" 
+)
+add_dependencies(FinalMainMessage ${THEPROJECT_NAME} )
