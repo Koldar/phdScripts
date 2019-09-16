@@ -3,35 +3,82 @@
 # **********************************************************************************************
 
 #the name of the project
-set(THEPROJECT_NAME "cpp-utils")
+set(THEPROJECT_NAME "PROJECT_NAME")
+
 #the version of the project
 set(THEPROJECT_VERSION 1.0)
+
 #what will be prodiced: either EXE (executable); SO (shared library) AO (static library)
 #Can be overriden by using "cmake -DU_LIBRARY_TYPE:STRING=<newvalue>" command
 set(THEPROJECT_OUTPUT "SO")
-#a spaced separated list of shared libraries that will be used when linking the main project. Each library needs to be installed
-#on the system. Each library should be declared as a quoted string
+
+#a spaced separated list of shared libraries names that will be used when linking the main project. 
+#Each library needs to be installed on the system. Each library should be declared as a quoted string
 set(THEPROJECT_REQUIRED_SHARED_LIBRARIES "m")
+
+#Represents the library official name of an entry in THEPROJECT_REQUIRED_SHARED_LIBRARIES.
+#This has been done because sometimes a library soname is not the library common nam e (e.g., "m" is "math")
+#The variable is a spaced separated list of names. The i-th element in THEPROJECT_REQUIRED_SHARED_LIBRARIES_NAMES
+#is the name of the i-th library in THEPROJECT_REQUIRED_SHARED_LIBRARIES
+set(THEPROJECT_REQUIRED_SHARED_LIBRARIES_NAMES "math")
+
+#Represents the package name we need to install with "apt-get" software of an entry in THEPROJECT_REQUIRED_SHARED_LIBRARIES.
+#This has been done because in this way this script can automatically install dependency if needed (this feature has not been done yet though)
+#For example if the library is "metis" here we should have "metis" because "sudo apt-get install metis" will install metis
+#The variable is a spaced separated list of names. The i-th element in THEPROJECT_REQUIRED_SHARED_LIBRARIES_NAMES.
+#An empty string if the library cannot be installed via apt-get.
+#is the name of the i-th library in THEPROJECT_REQUIRED_SHARED_LIBRARIES
+set(THEPROJECT_REQUIRED_SHARED_LIBRARIES_APTGET "")
+
 #a spaced separated list of additional shared libraries that will be used when linking the test application. Each library needs to be installed
 #ignore it if you put "THEPROJECT_TEST_ENABLE_TEST_COMPILATION" to "false" 
 set(THEPROJECT_TEST_ADDITIONAL_SHARED_LIBRARIES "")
+
+#Represents the library official name of an entry in THEPROJECT_TEST_ADDITIONAL_SHARED_LIBRARIES.
+#This has been done because sometimes a library soname is not the library common nam e (e.g., "m" is "math")
+#The variable is a spaced separated list of names. The i-th element in THEPROJECT_TEST_ADDITIONAL_SHARED_LIBRARIES_NAMES
+#is the name of the i-th library in THEPROJECT_TEST_ADDITIONAL_SHARED_LIBRARIES
+set(THEPROJECT_TEST_ADDITIONAL_SHARED_LIBRARIES_NAMES "")
+
+#Represents the package name we need to install with "apt-get" software of an entry in THEPROJECT_TEST_ADDITIONAL_SHARED_LIBRARIES.
+#This has been done because in this way this script can automatically install dependency if needed (this feature has not been done yet though)
+#For example if the library is "metis" here we should have "metis" because "sudo apt-get install metis" will install metis
+#The variable is a spaced separated list of names. The i-th element in THEPROJECT_TEST_ADDITIONAL_SHARED_LIBRARIES_NAMES.
+#An empty string if the library cannot be installed via apt-get
+#is the name of the i-th library in THEPROJECT_TEST_ADDITIONAL_SHARED_LIBRARIES
+set(THEPROJECT_TEST_ADDITIONAL_SHARED_LIBRARIES_APTGET "")
+
 #true if you want to compile the all the tests inside src/test/c src/test/include.
 #values: "true", "false"
 set(THEPROJECT_TEST_ENABLE_TEST_COMPILATION "true")
+
 #If you're building a library, use this variable to enable or disable the -fPIC flag. Ignored if not building library.
 #turning on will allow multiple process to share the same library object code but it will reduce performances.
 #By turning off every process using the library will have its own copy of the library code, but it will increase performances.
 #Can be overriden by using "cmake -DU_FPIC:STRING=<newvalue>" command  
 set(THEPROJECT_POSITION_INDEPENDENT_CODE "true")
+
 #The log level of the debug build for this project.
-# Values go from 0(debug) till 7 (critical)
-#Can be overriden by using "cmake -U_DEBUG_LOG_LEVEL:STRING=<newvalue>" command  
-set(THEPROJECT_DEBUG_LOG_LEVEL "0")
+#Can be overriden by using "cmake -U_DEBUG_LOG_LEVEL:STRING=<newvalue>" command
+# Values go from 0(debug) till 7 (critical). Values are:
+# 0: DEBUG
+# 1: FINEST
+# 2: FINER
+# 3: FINE
+# 4: <undefined>
+# 5: INFO
+# 6: WARNING
+# 7: ERROR
+# 8 CRITICAL
+set(THEPROJECT_DEBUG_LOG_LEVEL "3")
+
 #put true if you have changed something inside this cmake standard building process; false otherwise
 set(STANDARD_CMAKE_FILE_ALTERED "false")
+
 #If you have altered the standard CMAKE file standard process, consider explaining in this variable what have you changed to help future maintainers!
 #The variable is ignored if "STANDARD_CMAKE_FILE_ALTERED" is false
 set(CMAKE_FILE_ALTERED_COMMAND "")
+
 #Represents the version of the building process version. You can use this value to understand what this cmake building process can and can't do
 #For example in building processes before the "1.0" "sudo make install" of exectuables wasn't supported.
 # - 1.0: first version
@@ -42,7 +89,9 @@ set(CMAKE_FILE_ALTERED_COMMAND "")
 # - 1.5: ease to tweak log in cmake
 # - 1.6: fmax-errors=1 isntead of -Wfatal-errors
 # - 1.7: add done message at the end of successful compilation
-set(CMAKE_FILE_BUILDING_PROCESS_VERSION "1.7")
+# - 1.8: added Catch framework in test, log default to 3, improve documentation, add library names and apt-get
+set(CMAKE_FILE_BUILDING_PROCESS_VERSION "1.8")
+
 #The place where all the stuff created by "sudo make install" will be positioned"
 #Leave it if you don't want to change the behaviour. Can be overriden by U_INSTALL_DIRECTORY. For example: "-DU_INSTALL_DIRECTORY=~/usr"
 #(no end slash!).
@@ -58,6 +107,50 @@ set(THEPROJECT_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# **********************************************************************************************
+# ************************* CMAKE SCRIPT (DO NOT EDIT!!) ***************************************
+# **********************************************************************************************
 
 # ******************** CHECK CONSTRAINTS ***************************
 
@@ -138,7 +231,7 @@ message(STATUS "${BoldCyan}log level for debug build set to ${THEPROJECT_DEBUG_L
 
 if(PARENTDIR STREQUAL "Release")
     message(STATUS "${BoldCyan}Building Release!${ColorReset}")
-    #totally disable log.h
+    #totally disable log.hpp
     set(CMAKE_BUILD_TYPE "Release")
     add_definitions(-DQUICK_LOG=7)
 endif()
