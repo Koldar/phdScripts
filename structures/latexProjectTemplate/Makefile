@@ -20,13 +20,12 @@ LATEX_FLAGS:=
 # Additional latex flags that will be used in the build process when building the bibliography
 BIBTEX_FLAGS:=
 COLORIZE_MAPPING:= \
-	--map '"Warning"' 'YELLOW + "Warning" + RESET' \
-	--map 'r"(Overfull.+)"' 'YELLOW + r"\1" + RESET' \
-	--map 'r"^(Underfull.+)"' 'YELLOW + r"\1" + RESET' \
-	--map '"Error"' 'BOLD_RED + "Warning" + RESET'
-
-
-
+	--map 'r"(.+\W+(Warning\W+.+)"' 'YELLOW + r"\1" + RESET' \
+	--map 'r"(.+\W+Overfull\W+.+)"' 'YELLOW + r"\1" + RESET' \
+	--map 'r"(.+\W+Underfull\W+.+)"' 'YELLOW + r"\1" + RESET' \
+	--map 'r"Error"' 'BOLD_RED + "Error" + RESET' \
+	--map 'r"(.+\W+Undefined control sequence.+)"' 'BOLD_RED + r"\1" + RESET' \
+	--map 'r"^(.+\W+error\W+.+)"' 'BOLD_RED + r"\1" + RESET' \
 
 
 #########################################
@@ -66,11 +65,17 @@ show-info:
 all: show-info
 	@echo $(BOLD_BLUE)"Compiling first time..."$(DEFAULT)
 	$(LATEX_CC) -halt-on-error -output-directory=$(BUILD_FOLDER) $(LATEX_FLAGS) $(MAIN_SRC).tex 2>&1 | ./colorize.py $(COLORIZE_MAPPING)
+	@if test $? != 0; then echo $(BOLD_RED)"FAILURE!"$(DEFAULT); exit 1; fi
+
 	@echo $(BOLD_BLUE)"Building bibliography..."$(DEFAULT)
 	$(BIBTEX_CC) $(BIBTEX_FLAGS) $(BUILD_FOLDER)/$(MAIN_SRC).aux | ./colorize.py $(COLORIZE_MAPPING)
+	@if test $? != 0; then echo $(BOLD_RED)"FAILURE!"$(DEFAULT); exit 1; fi
+	
 	@echo $(BOLD_BLUE)"Compiling second time..."$(DEFAULT)
 	$(LATEX_CC) -halt-on-error -output-directory=$(BUILD_FOLDER) $(LATEX_FLAGS) $(MAIN_SRC).tex | ./colorize.py $(COLORIZE_MAPPING)
-	if test "$(BUILD_FOLDER)/$(MAIN_SRC).pdf" != "$(BUILD_FOLDER)/$(OUTPUT_NAME).pdf"; then	mv -v $(BUILD_FOLDER)/$(MAIN_SRC).pdf $(BUILD_FOLDER)/$(OUTPUT_NAME).pdf; fi
+	@if test $? != 0; then echo $(BOLD_RED)"FAILURE!"$(DEFAULT); exit 1; fi
+	@if test "$(BUILD_FOLDER)/$(MAIN_SRC).pdf" != "$(BUILD_FOLDER)/$(OUTPUT_NAME).pdf"; then	mv -v $(BUILD_FOLDER)/$(MAIN_SRC).pdf $(BUILD_FOLDER)/$(OUTPUT_NAME).pdf; fi
+
 	@echo $(BOLD_GREEN)"DONE"$(DEFAULT)
 	
 clean:
