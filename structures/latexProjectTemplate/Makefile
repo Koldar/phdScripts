@@ -14,7 +14,7 @@ BIBTEX_CC:=bibtex
 MAIN_SRC:=main
 # name of the output that will be generated inside BUILD_FOLDER. No extension is needed (e.g., `main.pdf` should be written as `main`)
 OUTPUT_NAME:=main
-# Additional latex flags that will be used in the build process. Note that -halt-on-error and -output-directory are automatically added
+# Additional latex flags that will be used in the build process. Note that -halt-on-error, -interaction=nonstopmode and -output-directory are automatically added
 # to the build process
 LATEX_FLAGS:=
 # Additional latex flags that will be used in the build process when building the bibliography
@@ -39,6 +39,7 @@ COLORIZE_MAPPING:= \
 TEMPLATE_VERSION:=1.0
 # Some additional regarding the alteration of the build process. Use this to convey to other people your build process customizations
 NOTES:=no notes
+LATEX_STANDARD_FLAGS:=-interaction=nonstopmode -halt-on-error -output-directory=$(BUILD_FOLDER)
 
 #########################################
 # INTERNAL DETAILS
@@ -65,13 +66,13 @@ show-info:
 
 all: show-info
 	@echo $(BOLD_BLUE)"Compiling first time..."$(DEFAULT)
-	$(LATEX_CC) -halt-on-error -output-directory=$(BUILD_FOLDER) $(LATEX_FLAGS) $(MAIN_SRC).tex 2>&1 | ./colorize.py $(COLORIZE_MAPPING) || { echo $(BOLD_RED)"FAILURE!"$(DEFAULT); exit 1; }
+	$(LATEX_CC) $(LATEX_STANDARD_FLAGS) $(LATEX_FLAGS) $(MAIN_SRC).tex 2>&1 | ./colorize.py $(COLORIZE_MAPPING) || { echo $(BOLD_RED)"FAILURE!"$(DEFAULT); exit 1; }
 
 	@echo $(BOLD_BLUE)"Building bibliography..."$(DEFAULT)
 	$(BIBTEX_CC) $(BIBTEX_FLAGS) $(BUILD_FOLDER)/$(MAIN_SRC).aux | ./colorize.py $(COLORIZE_MAPPING)
 	
 	@echo $(BOLD_BLUE)"Compiling second time..."$(DEFAULT)
-	$(LATEX_CC) -halt-on-error -output-directory=$(BUILD_FOLDER) $(LATEX_FLAGS) $(MAIN_SRC).tex | ./colorize.py $(COLORIZE_MAPPING) || { echo $(BOLD_RED)"FAILURE!"$(DEFAULT); exit 1; }
+	$(LATEX_CC) $(LATEX_STANDARD_FLAGS) $(LATEX_FLAGS) $(MAIN_SRC).tex | ./colorize.py $(COLORIZE_MAPPING) || { echo $(BOLD_RED)"FAILURE!"$(DEFAULT); exit 1; }
 	
 	@if test "$(BUILD_FOLDER)/$(MAIN_SRC).pdf" != "$(BUILD_FOLDER)/$(OUTPUT_NAME).pdf"; then	mv -v $(BUILD_FOLDER)/$(MAIN_SRC).pdf $(BUILD_FOLDER)/$(OUTPUT_NAME).pdf; fi
 
