@@ -18,14 +18,14 @@ OUTPUT_NAME:=main
 # to the build process
 LATEX_FLAGS:=
 # Additional latex flags that will be used in the build process when building the bibliography
-BIBTEX_FLAGS:=
+BIBTEX_FLAGS:=-quiet
 COLORIZE_MAPPING:= \
-	--map 'r"(.+\W+(Warning\W+.+)"' 'YELLOW + r"\1" + RESET' \
-	--map 'r"(.+\W+Overfull\W+.+)"' 'YELLOW + r"\1" + RESET' \
-	--map 'r"(.+\W+Underfull\W+.+)"' 'YELLOW + r"\1" + RESET' \
+	--map 'r"(.*\W*Warning\W+.+)"' 'YELLOW + r"\1" + RESET' \
+	--map 'r"(.*\W*Overfull\W+.+)"' 'YELLOW + r"\1" + RESET' \
+	--map 'r"(.*\W*Underfull\W+.+)"' 'YELLOW + r"\1" + RESET' \
 	--map 'r"Error"' 'BOLD_RED + "Error" + RESET' \
-	--map 'r"(.+\W+Undefined control sequence.+)"' 'BOLD_RED + r"\1" + RESET' \
-	--map 'r"^(.+\W+error\W+.+)"' 'BOLD_RED + r"\1" + RESET' \
+	--map 'r"(.*\W*Undefined control sequence.*)"' 'BOLD_RED + r"\1" + RESET' \
+	--map 'r"^(.*\W*error\W+.+)"' 'BOLD_RED + r"\1" + RESET' \
 
 
 #########################################
@@ -38,6 +38,7 @@ COLORIZE_MAPPING:= \
 TEMPLATE_VERSION:=1.0
 # Some additional regarding the alteration of the build process. Use this to convey to other people your build process customizations
 NOTES:=no notes
+LATEXT_STANDARD_FLAGS:=-interaction=nonstopmode -halt-on-error -output-directory=$(BUILD_FOLDER)
 
 #########################################
 # INTERNAL DETAILS
@@ -60,24 +61,27 @@ BOLD_GREEN:="\e[1;32m"
 show-info:
 	@echo $(BOLD_BLUE)"Latex Template version is "$(TEMPLATE_VERSION)$(DEFAULT)
 	@echo "Notes from the developer regarding some notoriuos change in this file: "
-	@echo $(NOTES)
+	@echo "$(NOTES)"
 
 all: show-info
 	@echo $(BOLD_BLUE)"Compiling first time..."$(DEFAULT)
-	$(LATEX_CC) -halt-on-error -output-directory=$(BUILD_FOLDER) $(LATEX_FLAGS) $(MAIN_SRC).tex 2>&1 | ./colorize.py $(COLORIZE_MAPPING)
-	@if test $? != 0; then echo $(BOLD_RED)"FAILURE!"$(DEFAULT); exit 1; fi
+	$(LATEX_CC) $(LATEXT_STANDARD_FLAGS) $(LATEX_FLAGS) $(MAIN_SRC).tex 2>&1 | ./colorize.py $(COLORIZE_MAPPING) || { echo $(BOLD_RED)"FAILURE!"$(DEFAULT); exit 1; }
 
 	@echo $(BOLD_BLUE)"Building bibliography..."$(DEFAULT)
 	$(BIBTEX_CC) $(BIBTEX_FLAGS) $(BUILD_FOLDER)/$(MAIN_SRC).aux | ./colorize.py $(COLORIZE_MAPPING)
-	@if test $? != 0; then echo $(BOLD_RED)"FAILURE!"$(DEFAULT); exit 1; fi
 	
 	@echo $(BOLD_BLUE)"Compiling second time..."$(DEFAULT)
-	$(LATEX_CC) -halt-on-error -output-directory=$(BUILD_FOLDER) $(LATEX_FLAGS) $(MAIN_SRC).tex | ./colorize.py $(COLORIZE_MAPPING)
-	@if test $? != 0; then echo $(BOLD_RED)"FAILURE!"$(DEFAULT); exit 1; fi
+	$(LATEX_CC) $(LATEXT_STANDARD_FLAGS) $(LATEX_FLAGS) $(MAIN_SRC).tex | ./colorize.py $(COLORIZE_MAPPING) || { echo $(BOLD_RED)"FAILURE!"$(DEFAULT); exit 1; }
+
+	@echo $(BOLD_BLUE)"Compiling third time..."$(DEFAULT)
+	$(LATEX_CC) $(LATEXT_STANDARD_FLAGS) $(LATEX_FLAGS) $(MAIN_SRC).tex | ./colorize.py $(COLORIZE_MAPPING) || { echo $(BOLD_RED)"FAILURE!"$(DEFAULT); exit 1; }
+	
 	@if test "$(BUILD_FOLDER)/$(MAIN_SRC).pdf" != "$(BUILD_FOLDER)/$(OUTPUT_NAME).pdf"; then	mv -v $(BUILD_FOLDER)/$(MAIN_SRC).pdf $(BUILD_FOLDER)/$(OUTPUT_NAME).pdf; fi
 
-	@echo $(BOLD_GREEN)"DONE"$(DEFAULT)
+	@echo $(BOLD_GREEN)"SUCCESS!"$(DEFAULT)
 	
 clean:
 	rm -fv $(BUILD_FOLDER)/*
 	@echo $(BOLD_GREEN)"DONE"$(DEFAULT)
+
+
