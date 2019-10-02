@@ -26,6 +26,7 @@ COLORIZE_MAPPING:= \
 	--map 'r"Error"' 'BOLD_RED + "Error" + RESET' \
 	--map 'r"(.*\W*Undefined control sequence.*)"' 'BOLD_RED + r"\1" + RESET' \
 	--map 'r"^(.*\W*error\W+.+)"' 'BOLD_RED + r"\1" + RESET' \
+	--map 'r"^(.*\W*Illegal parameter number\W*.*)"' 'BOLD_RED + r"\1" + RESET'
 
 
 #########################################
@@ -38,7 +39,7 @@ COLORIZE_MAPPING:= \
 TEMPLATE_VERSION:=1.0
 # Some additional regarding the alteration of the build process. Use this to convey to other people your build process customizations
 NOTES:=no notes
-LATEXT_STANDARD_FLAGS:=-interaction=nonstopmode -halt-on-error -output-directory=$(BUILD_FOLDER)
+LATEX_STANDARD_FLAGS:=-interaction=nonstopmode -halt-on-error -output-directory=$(BUILD_FOLDER)
 
 #########################################
 # INTERNAL DETAILS
