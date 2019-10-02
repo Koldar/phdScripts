@@ -66,16 +66,16 @@ show-info:
 
 all: show-info
 	@echo $(BOLD_BLUE)"Compiling first time..."$(DEFAULT)
-	$(LATEX_CC) $(LATEXT_STANDARD_FLAGS) $(LATEX_FLAGS) $(MAIN_SRC).tex 2>&1 | ./colorize.py $(COLORIZE_MAPPING) || { echo $(BOLD_RED)"FAILURE!"$(DEFAULT); exit 1; }
+	$(LATEX_CC) $(LATEX_STANDARD_FLAGS) $(LATEX_FLAGS) $(MAIN_SRC).tex 2>&1 | ./colorize.py $(COLORIZE_MAPPING) || { echo $(BOLD_RED)"FAILURE!"$(DEFAULT); exit 1; }
 
 	@echo $(BOLD_BLUE)"Building bibliography..."$(DEFAULT)
 	$(BIBTEX_CC) $(BIBTEX_FLAGS) $(BUILD_FOLDER)/$(MAIN_SRC).aux | ./colorize.py $(COLORIZE_MAPPING)
 	
 	@echo $(BOLD_BLUE)"Compiling second time..."$(DEFAULT)
-	$(LATEX_CC) $(LATEXT_STANDARD_FLAGS) $(LATEX_FLAGS) $(MAIN_SRC).tex | ./colorize.py $(COLORIZE_MAPPING) || { echo $(BOLD_RED)"FAILURE!"$(DEFAULT); exit 1; }
+	$(LATEX_CC) $(LATEX_STANDARD_FLAGS) $(LATEX_FLAGS) $(MAIN_SRC).tex | ./colorize.py $(COLORIZE_MAPPING) || { echo $(BOLD_RED)"FAILURE!"$(DEFAULT); exit 1; }
 
 	@echo $(BOLD_BLUE)"Compiling third time..."$(DEFAULT)
-	$(LATEX_CC) $(LATEXT_STANDARD_FLAGS) $(LATEX_FLAGS) $(MAIN_SRC).tex | ./colorize.py $(COLORIZE_MAPPING) || { echo $(BOLD_RED)"FAILURE!"$(DEFAULT); exit 1; }
+	$(LATEX_CC) $(LATEX_STANDARD_FLAGS) $(LATEX_FLAGS) $(MAIN_SRC).tex | ./colorize.py $(COLORIZE_MAPPING) || { echo $(BOLD_RED)"FAILURE!"$(DEFAULT); exit 1; }
 	
 	@if test "$(BUILD_FOLDER)/$(MAIN_SRC).pdf" != "$(BUILD_FOLDER)/$(OUTPUT_NAME).pdf"; then	mv -v $(BUILD_FOLDER)/$(MAIN_SRC).pdf $(BUILD_FOLDER)/$(OUTPUT_NAME).pdf; fi
 
