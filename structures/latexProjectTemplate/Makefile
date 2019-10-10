@@ -79,10 +79,10 @@ all: show-info
 	
 	@if test "$(BUILD_FOLDER)/$(MAIN_SRC).pdf" != "$(BUILD_FOLDER)/$(OUTPUT_NAME).pdf"; then	mv -v $(BUILD_FOLDER)/$(MAIN_SRC).pdf $(BUILD_FOLDER)/$(OUTPUT_NAME).pdf; fi
 
-	@echo $(BOLD_GREEN)"SUCCESS!"$(DEFAULT)
+	@echo $(BOLD_GREEN)"DONE COMPILING. Check $(BUILD_FOLDER)/$(OUTPUT_NAME).pdf"$(DEFAULT)
 	
 clean:
 	rm -rfv $(BUILD_FOLDER)/*
-	@echo $(BOLD_GREEN)"DONE"$(DEFAULT)
+	@echo $(BOLD_GREEN)"DONE CLEANING"$(DEFAULT)
 
 
