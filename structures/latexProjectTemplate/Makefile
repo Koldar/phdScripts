@@ -82,7 +82,7 @@ all: show-info
 	@echo $(BOLD_GREEN)"SUCCESS!"$(DEFAULT)
 	
 clean:
-	rm -fv $(BUILD_FOLDER)/*
+	rm -rfv $(BUILD_FOLDER)/*
 	@echo $(BOLD_GREEN)"DONE"$(DEFAULT)
 
 
