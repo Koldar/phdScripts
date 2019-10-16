@@ -26,7 +26,6 @@ COLORIZE_MAPPING:= \
 	--map 'r"Error"' 'BOLD_RED + "Error" + RESET' \
 	--map 'r"(.*\W*Undefined control sequence.*)"' 'BOLD_RED + r"\1" + RESET' \
 	--map 'r"^(.*\W*error\W+.+)"' 'BOLD_RED + r"\1" + RESET' \
-	--map 'r"^(.*\W*Illegal parameter number\W*.*)"' 'BOLD_RED + r"\1" + RESET'
 
 
 #########################################
@@ -37,9 +36,9 @@ COLORIZE_MAPPING:= \
 # Follows a quick changelog:
 # 1.0 first version
 TEMPLATE_VERSION:=1.0
-# Some additional regarding the alteration of the build process. Use this to convey to other people your build process customizations
+# Some additional regarding the alteration of the build process. Use this to convey to other people your build process customizations (i.e., you have edit the internal details of this file)
 NOTES:=no notes
-LATEX_STANDARD_FLAGS:=-interaction=nonstopmode -halt-on-error -output-directory=$(BUILD_FOLDER)
+LATEXT_STANDARD_FLAGS:=-interaction=nonstopmode -halt-on-error -output-directory=$(BUILD_FOLDER)
 
 #########################################
 # INTERNAL DETAILS
@@ -57,25 +56,49 @@ BOLD_GREEN:="\e[1;32m"
 
 .DEFAULT_GOAL:=all
 
-.phony: show-info all clean
+.phony: show-info all clean check-commands fast help
+
+help:
+	@echo "Targets are:"
+	@echo " - show-info: allows you to determine the version of this build process plus some information the original developer has left you: such notes refer to changes the original developer has made to this build process"
+	@echo " - check-commnds: check if the system has installed all the required command in order for the build process to complete"
+	@echo " - all [DEFAULT]: build the pdf file using the 2 full compilations, one bibtex call and another latex compile run. Slow but generates the correct pdf"
+	@echo " - fast: build the pdf only by calling latex once. Fast but if new references have been added, this command may leave some references undefined."
+	@echo " - clean: claer all the contents of build directory"
+	@echo " - help: shows this message"
+
+check-commands:
+	@$(if $(shell which echo),echo $(BOLD_BLUE)"echo command: $(shell which echo)"$(DEFAULT),echo $(BOLD_RED)"Required 'echo' command not found"$(DEFAULT) && /bin/false) 
+	@$(if $(shell which test),echo $(BOLD_BLUE)"test command: $(shell which test)"$(DEFAULT),echo $(BOLD_RED)"Required 'test' command not found"$(DEFAULT) && /bin/false) 
+	@$(if $(shell which python3),echo $(BOLD_BLUE)"test command: $(shell which python3)"$(DEFAULT),echo $(BOLD_RED)"Required 'python3' command not found"$(DEFAULT) && /bin/false) 
+	@$(if $(shell which $(LATEX_CC)),echo $(BOLD_BLUE)"$(LATEX_CC) command: $(shell which $(LATEX_CC))"$(DEFAULT),echo $(BOLD_RED)"Required '$(LATEX_CC)' command not found"$(DEFAULT) && /bin/false) 
+	@$(if $(shell which $(BIBTEX_CC)),echo $(BOLD_BLUE)"$(BIBTEX_CC) command: $(shell which $(BIBTEX_CC))"$(DEFAULT),echo $(BOLD_RED)"Required '$(BIBTEX_CC)' command not found"$(DEFAULT) && /bin/false) 
 
 show-info:
 	@echo $(BOLD_BLUE)"Latex Template version is "$(TEMPLATE_VERSION)$(DEFAULT)
 	@echo "Notes from the developer regarding some notoriuos change in this file: "
 	@echo "$(NOTES)"
 
-all: show-info
+fast: check-commands show-info 
+	@echo $(BOLD_BLUE)"Compiling one time..."$(DEFAULT)
+	$(LATEX_CC) $(LATEXT_STANDARD_FLAGS) $(LATEX_FLAGS) $(MAIN_SRC).tex 2>&1 | ./colorize.py $(COLORIZE_MAPPING) || { echo $(BOLD_RED)"FAILURE!"$(DEFAULT); exit 1; }
+
+	@if test "$(BUILD_FOLDER)/$(MAIN_SRC).pdf" != "$(BUILD_FOLDER)/$(OUTPUT_NAME).pdf"; then	mv -v $(BUILD_FOLDER)/$(MAIN_SRC).pdf $(BUILD_FOLDER)/$(OUTPUT_NAME).pdf; fi
+
+	@echo $(BOLD_GREEN)"DONE COMPILING. Check $(BUILD_FOLDER)/$(OUTPUT_NAME).pdf"$(DEFAULT)
+
+all: check-commands show-info
 	@echo $(BOLD_BLUE)"Compiling first time..."$(DEFAULT)
-	$(LATEX_CC) $(LATEX_STANDARD_FLAGS) $(LATEX_FLAGS) $(MAIN_SRC).tex 2>&1 | ./colorize.py $(COLORIZE_MAPPING) || { echo $(BOLD_RED)"FAILURE!"$(DEFAULT); exit 1; }
+	$(LATEX_CC) $(LATEXT_STANDARD_FLAGS) $(LATEX_FLAGS) $(MAIN_SRC).tex 2>&1 | ./colorize.py $(COLORIZE_MAPPING) || { echo $(BOLD_RED)"FAILURE!"$(DEFAULT); exit 1; }
 
 	@echo $(BOLD_BLUE)"Building bibliography..."$(DEFAULT)
 	$(BIBTEX_CC) $(BIBTEX_FLAGS) $(BUILD_FOLDER)/$(MAIN_SRC).aux | ./colorize.py $(COLORIZE_MAPPING)
 	
 	@echo $(BOLD_BLUE)"Compiling second time..."$(DEFAULT)
-	$(LATEX_CC) $(LATEX_STANDARD_FLAGS) $(LATEX_FLAGS) $(MAIN_SRC).tex | ./colorize.py $(COLORIZE_MAPPING) || { echo $(BOLD_RED)"FAILURE!"$(DEFAULT); exit 1; }
+	$(LATEX_CC) $(LATEXT_STANDARD_FLAGS) $(LATEX_FLAGS) $(MAIN_SRC).tex | ./colorize.py $(COLORIZE_MAPPING) || { echo $(BOLD_RED)"FAILURE!"$(DEFAULT); exit 1; }
 
 	@echo $(BOLD_BLUE)"Compiling third time..."$(DEFAULT)
-	$(LATEX_CC) $(LATEX_STANDARD_FLAGS) $(LATEX_FLAGS) $(MAIN_SRC).tex | ./colorize.py $(COLORIZE_MAPPING) || { echo $(BOLD_RED)"FAILURE!"$(DEFAULT); exit 1; }
+	$(LATEX_CC) $(LATEXT_STANDARD_FLAGS) $(LATEX_FLAGS) $(MAIN_SRC).tex | ./colorize.py $(COLORIZE_MAPPING) || { echo $(BOLD_RED)"FAILURE!"$(DEFAULT); exit 1; }
 	
 	@if test "$(BUILD_FOLDER)/$(MAIN_SRC).pdf" != "$(BUILD_FOLDER)/$(OUTPUT_NAME).pdf"; then	mv -v $(BUILD_FOLDER)/$(MAIN_SRC).pdf $(BUILD_FOLDER)/$(OUTPUT_NAME).pdf; fi
 
