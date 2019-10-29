@@ -1,10 +1,27 @@
 
-#include in the build all the content inside the directory
-include_directories("../include")
+# HANDLE CPP FILES
+
 #you might want to add the sources via the following command: set(SOURCES src/mainapp.cpp src/Student.cpp)
 #but with GLOB is all much easier; include in the build all the content filtered by the pattern
-file(GLOB SOURCES "*.cpp")
-file(GLOB HEADERS "../include/*.hpp")
+file(GLOB_RECURSE SOURCES "*.cpp")
+
+# HANDLE HEADER FILES
+
+file(GLOB_RECURSE HEADERS "../include/*.hpp")
+
+# absolute directory path of src/main/include
+get_filename_component(HEADER_MAIN_ROOTDIR "../../src/main/include" REALPATH BASE_DIR "${CMAKE_BINARY_DIR}")
+message(STATUS "${BoldCyan}Main Header file should all be located in: ${buildDirRelFilePath}${ColorReset}")
+
+SUBDIRLIST(HEADER_SUBDIRS ${HEADER_MAIN_ROOTDIR})
+message(STATUS "${BoldCyan}Directories where headers are found: ../include;${HEADER_SUBDIRS}${ColorReset}")
+FOREACH(subdir ${HEADER_SUBDIRS})
+    include_directories(${subdir})
+ENDFOREACH()
+#include in the build all the content inside the directory
+include_directories("../include")
+
+# SET THE OUTPUT TYPE OF THIS PROJECT
 
 if(${THEPROJECT_OUTPUT} STREQUAL "EXE")
     add_executable(${THEPROJECT_NAME} ${SOURCES})
