@@ -153,6 +153,28 @@ set(THEPROJECT_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 # ************************* CMAKE SCRIPT (DO NOT EDIT!!) ***************************************
 # **********************************************************************************************
 
+# ******************** MACRO DEFINITIONS ***************************
+
+# Given an absolute path of a directory, fetch all the subdirectories
+#
+# @code
+# SUBDIRLIST(OUTPUT "/home/koldar/example")
+# @endcode
+#
+# @param result the list you want to populate with subdirectories
+# @param absolutepathdir absolute path of the roto directory. No "/" should be put at the end of the directory
+# return list fo absolute paths of the subdirectories. root directory **not** included!
+MACRO(SUBDIRLIST result absolutepathdir)
+  FILE(GLOB_RECURSE children LIST_DIRECTORIES true RELATIVE ${absolutepathdir} ${absolutepathdir}/*)
+  SET(dirlist "")
+  FOREACH(child ${children})
+    IF(IS_DIRECTORY ${absolutepathdir}/${child})
+      LIST(APPEND dirlist ${absolutepathdir}/${child})
+    ENDIF()
+  ENDFOREACH()
+  SET(${result} ${dirlist})
+ENDMACRO()
+
 # ******************** CHECK CONSTRAINTS ***************************
 
 cmake_minimum_required(VERSION 2.8.7)
