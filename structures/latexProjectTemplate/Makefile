@@ -16,6 +16,8 @@ BIBTEX_CC:=bibtex
 MAIN_SRC:=main
 # name of the output that will be generated inside BUILD_FOLDER. No extension is needed (e.g., `main.pdf` should be written as `main`)
 OUTPUT_NAME:=main
+# name of the file that will be generated inside RELEASE_FOLDER when a release document is added. Note that we will append to such name the version automatically
+RELEASE_NAME:=release
 # Additional latex flags that will be used in the build process. Note that -halt-on-error and -output-directory are automatically added
 # to the build process
 LATEX_FLAGS:=
@@ -125,7 +127,7 @@ release: all
 
 	@echo "Old version to replace is `cat $(VERSION_FILE)`"
 	@expr 1 + `cat $(VERSION_FILE)` > $(VERSION_FILE)
-	@cp -v $(BUILD_FOLDER)/$(OUTPUT_NAME).pdf "$(RELEASE_FOLDER)/$(OUTPUT_NAME)_`cat $(VERSION_FILE)`.0.0.pdf"
+	@cp -v $(BUILD_FOLDER)/$(OUTPUT_NAME).pdf "$(RELEASE_FOLDER)/$(RELEASE_NAME)_`cat $(VERSION_FILE)`.0.0.pdf"
 	@echo $(BOLD_GREEN)"DONE RELEASING VERSION `cat $(VERSION_FILE)`.0.0. It's available in $(RELEASE_FOLDER) folder."$(DEFAULT)
 	
 
