@@ -82,8 +82,11 @@ check-commands:
 	@$(if $(shell which echo),echo $(BOLD_BLUE)"echo command: $(shell which echo)"$(DEFAULT),echo $(BOLD_RED)"Required 'echo' command not found"$(DEFAULT) && /bin/false) 
 	@$(if $(shell which test),echo $(BOLD_BLUE)"test command: $(shell which test)"$(DEFAULT),echo $(BOLD_RED)"Required 'test' command not found"$(DEFAULT) && /bin/false) 
 	@$(if $(shell which rm),echo $(BOLD_BLUE)"rm command: $(shell which rm)"$(DEFAULT),echo $(BOLD_RED)"Required 'rm' command not found"$(DEFAULT) && /bin/false)
+	@$(if $(shell which cp),echo $(BOLD_BLUE)"cp command: $(shell which cp)"$(DEFAULT),echo $(BOLD_RED)"Required 'cp' command not found"$(DEFAULT) && /bin/false)
+	@$(if $(shell which mv),echo $(BOLD_BLUE)"mv command: $(shell which mv)"$(DEFAULT),echo $(BOLD_RED)"Required 'mv' command not found"$(DEFAULT) && /bin/false)
+	@$(if $(shell which cat),echo $(BOLD_BLUE)"cat command: $(shell which cat)"$(DEFAULT),echo $(BOLD_RED)"Required 'cat' command not found"$(DEFAULT) && /bin/false)
 	@$(if $(shell which touch),echo $(BOLD_BLUE)"touch command: $(shell which touch)"$(DEFAULT),echo $(BOLD_RED)"Required 'touch' command not found"$(DEFAULT) && /bin/false) 
-	@$(if $(shell which python3),echo $(BOLD_BLUE)"test command: $(shell which python3)"$(DEFAULT),echo $(BOLD_RED)"Required 'python3' command not found"$(DEFAULT) && /bin/false) 
+	@$(if $(shell which python3),echo $(BOLD_BLUE)"python3 command: $(shell which python3)"$(DEFAULT),echo $(BOLD_RED)"Required 'python3' command not found"$(DEFAULT) && /bin/false) 
 	@$(if $(shell which $(LATEX_CC)),echo $(BOLD_BLUE)"$(LATEX_CC) command: $(shell which $(LATEX_CC))"$(DEFAULT),echo $(BOLD_RED)"Required '$(LATEX_CC)' command not found"$(DEFAULT) && /bin/false) 
 	@$(if $(shell which $(BIBTEX_CC)),echo $(BOLD_BLUE)"$(BIBTEX_CC) command: $(shell which $(BIBTEX_CC))"$(DEFAULT),echo $(BOLD_RED)"Required '$(BIBTEX_CC)' command not found"$(DEFAULT) && /bin/false) 
 
