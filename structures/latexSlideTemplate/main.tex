@@ -1,4 +1,4 @@
-\documentclass[a4]{article}
+\documentclass[usenames,dvipsnames]{beamer}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % PACKAGES
@@ -14,6 +14,7 @@
 \usepackage{enumitem}
 \usepackage{graphicx}
 \usepackage{diagbox}
+\usepackage{changepage} % https://tex.stackexchange.com/a/160827/145331
 
 % PROOF READING
 
@@ -29,6 +30,14 @@
 
 \usepackage{xcolor}
 \usepackage{cancel}
+\usepackage{anyfontsize}
+\usepackage{moresize}
+\usepackage{bm} %use bold in math
+
+% TABLES
+
+\usepackage{makecell} % https://tex.stackexchange.com/a/11694/145331
+\usepackage{multirow}
 
 % THEOREMS & MATHS
 
@@ -40,6 +49,16 @@
 % ALGORITHMS
 
 \usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CONFIGURATIONS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%beamer theme
+\usetheme{Frankfurt}
+
+\setbeamertemplate{itemize item}{$\bm{\diamond}$}
+\setbeamertemplate{itemize subitem}{$\bm{-}$}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % IMPORTS OF CUSTOM COMMANDS
@@ -64,6 +83,7 @@
 
 \title{}
 \author{}
+\institute{}
 \date{\today}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -71,11 +91,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %declare theorem, definitions, corollary, lemmas
-\newtheorem{theorem}{Theorem}[section]
-\newtheorem{corollary}{Corollary}[theorem]
-\newtheorem{lemma}[theorem]{Lemma}
-
-\newtheorem{definition}{Definition}[section]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % MAIN DOCUMENT
@@ -83,24 +98,16 @@
 
 \begin{document}
 
-\maketitle
-\clearpage
+%https://stackoverflow.com/a/3210406/1887602
+\beamertemplatenavigationsymbolsempty
 
-\tableofcontents
-\clearpage
-
-%\listoffigures
-%\clearpage
-
-%\listofalgorithms
-%\clearpage
- 
-%\listoftables
-%\clearpage
-
-%\input{src/texs/add-tex.tex}
-
-\clearpage
-\input{src/texs/90-bibliography.tex}
+% add inputs
+% \input{src/texs/...}
+\input{src/texs/01-titlepage.tex}
+\input{src/texs/02-introduction.tex}
+\input{src/texs/03-context-and-background.tex}
+\input{src/texs/04-proposed-technique.tex}
+\input{src/texs/05-experimental-results.tex}
+\input{src/texs/06-conclusion-and-future-works.tex}
 
 \end{document}
