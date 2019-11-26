@@ -1,0 +1,106 @@
+\documentclass[a4]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PACKAGES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% STANDARD
+
+\usepackage{etoolbox}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{xparse}
+\usepackage{xstring}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{diagbox}
+
+% PROOF READING
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+% TIKZ
+
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, matrix, arrows,automata,positioning}
+
+% FONTS AND COLORS
+
+\usepackage{xcolor}
+\usepackage{cancel}
+
+% THEOREMS & MATHS
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{mathtools}
+
+% ALGORITHMS
+
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% IMPORTS OF CUSTOM COMMANDS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{src/cmds/commons.tex}
+\input{src/cmds/commands-shared.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% GEOMTRIES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\renewcommand{\dblfloatpagefraction}{0.95}
+\renewcommand{\dbltopfraction}{1}
+\renewcommand{\topfraction}{1}
+\renewcommand{\textfraction}{0.0}
+\renewcommand{\floatpagefraction}{1}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% DOCUMENT FRONT PAGE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{}
+\author{}
+\date{\today}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% THEOREMS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%declare theorem, definitions, corollary, lemmas
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+
+\newtheorem{definition}{Definition}[section]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% MAIN DOCUMENT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\maketitle
+\clearpage
+
+\tableofcontents
+\clearpage
+
+%\listoffigures
+%\clearpage
+
+%\listofalgorithms
+%\clearpage
+ 
+%\listoftables
+%\clearpage
+
+%\input{src/texs/add-tex.tex}
+
+\clearpage
+\input{src/texs/90-bibliography.tex}
+
+\end{document}
