@@ -233,7 +233,8 @@ def generate_compat(output_directory: Path, compatibility_level: int = 10) -> Pa
         f.write(f"10")
     return result
 
-def generate_control(output_directory: Path, package_name: str, maintainer_name: str, maintainer_mail: str, priority: str, dependencies: List[Dependency])
+
+def generate_control(output_directory: Path, package_name: str, maintainer_name: str, maintainer_mail: str, priority: str, dependencies: List[Dependency], architectures: List[str], brief_description: str, long_description: str)
     result = os.path.join(output_directory, "control")
     with open(result, "w") as f:
         f.write(f"Source: {package_name}\n")
@@ -246,6 +247,22 @@ def generate_control(output_directory: Path, package_name: str, maintainer_name:
         f.write(f"Architecture: {', '.join(architectures)}\n")
         f.write(f"Depends: ${{shlibs:Depends}}, ${{misc:Depends}}\n")
         f.write(f"Description: {brief_description}\n{long_description}\n")
+    return result
+
+
+def generate_copyright(output_directory: Path) -> Path:
+    result = os.path.join(output_directory, "copyright")
+    with open(result, "w") as f:
+        f.write("")
+    return result
+
+
+def generate_rules(output_directory: Path) -> Path:
+    result = os.path.join(output_directory, "rules")
+    with open(result, "w") as f:
+        f.write("!/usr/bin/make -f\n")
+        f.write("%:\n")
+        f.write("\tdh $@")
     return result
 
 def main():
@@ -304,6 +321,16 @@ def main():
         each separated by a ",". Type can be either "=", ">=", ">", "<", "<=".
         For example "metis,>=,5" says that the building package requires at least version 5 of the pacakge metis
     """)
+    parser.add_argument("--architectures", nargs="*", type=str, choices=["all", "any", "i386", "amd64", "armel"], help="""
+        List of architectures. Multiple options can be put. "any"  means that the package can be built for any architecture. "all" 
+        means that the same binary package will work on all architectures, without having to be built separately for each.
+    """)
+    parser.add_argument("--brief-description", required=True, type=str, help="""
+    A 1-liner sentence summarizing the package objective
+    """)
+    parser.add_argument("--long-description", required=True, type=str, help="""
+    A longer description of the package
+    """)
     options, _ = parser.parse_args(sys.argv[1:])
 
     folder_to_upload = options.folder_to_upload
@@ -319,6 +346,9 @@ def main():
     maintainer_name = options.maintainer_name
     maintainer_mail = options.maintainer_mail
     dependency_list = list(map(lambda x: Dependency(name=x[0], type=x[1], version=x[2]), map(lambda x: x.split(","), options.dependency)))
+    architectures = options.architectures
+    brief_description = options.brief_description
+    long_description = options.long_description
 
 
     setup_system()
@@ -351,13 +381,24 @@ def main():
         compatibility_level=10
     )
 
-    generate_control(
+    control = generate_control(
         output_directory=temp_directory,
         package_name=package_name,
         priority=priority,
         maintainer_name=maintainer_name,
         maintainer_mail=maintainer_mail,
         dependencies=dependency_list,
+        architectures=architectures,
+        brief_description=brief_description,
+        long_description=long_description
+    )
+
+    copyright = generate_copyright(
+        output_directory=temp_directory,
+    )
+
+    rules = generate_rules(
+        output_directory= temp_directory
     )
 
 
