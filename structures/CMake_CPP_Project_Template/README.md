@@ -83,3 +83,5 @@ The code should follow these conventions:
     template <typename ...OTHER>
     void foo(const OTHER&... others);
     ```
+
+ - if you are coding a function that saves or loads from a file, always require to input the extension of the file as well, even if it obvious;
