@@ -6,6 +6,7 @@ import os
 import sys
 import subprocess
 import re
+import time
 from typing import Optional, Tuple, List, Union
 
 Path = str
@@ -179,7 +180,7 @@ def get_tarball_valid_unpack_directory_name(package_name: str, version_number: s
     :param version_number: version number
     :return: the name of the folder that is obtained by unpacking the tarball
     """
-    return f"{package_name}-{version_number}"
+    return f"{package_name}_{version_number}"
 
 
 def is_string_valid_source_package_name(pkgname: str) -> bool:
@@ -209,8 +210,9 @@ def create_tarball(package_name: str, version_number: str, folder_to_upload: str
     """
     tar_basename = get_tarball_debian_basename(package_name, version_number)
     result = os.path.abspath(os.path.join(output_directory, tar_basename + ".tar.gz"))
+    logging.info(f"creating tar {result}...")
     if folder_to_upload_vcs is None:
-        run_command(f"tar -czvf {result} {folder_to_upload}")
+        run_command(f"tar -czf {result} {folder_to_upload}")
     elif folder_to_upload_vcs == "git":
         run_command(f'git archive --format="tar" {folder_to_upload} | gzip > {result}')
     else:
@@ -273,8 +275,13 @@ def ensure_tarball_unpack_into_valid_folder(tarball: Path, package_name: str, ve
     os.rename(src=unpacked_folder_path, dst=new_folder_path)
 
     # now repack it. We use the tar command because we obtain the folder by unpacking the previous source tarball
-    result = os.path.abspath(os.path.join(output_directory, new_folder_name + ".tar.gz"))
-    run_command(f"tar -czvf {result} {new_folder_path}")
+    result = os.path.abspath(os.path.join(output_directory, new_folder_name + ".orig.tar.gz"))
+    logging.info(f"tarball generated didsn't satisfy criteria fro deb (its unpacked name does not match with {package_name}). Compressing...")
+    logging.info(f"recompressing folder {new_folder_path}...")
+    # -czvf z
+    #run_command(cmd=["tar", "--create", "--gzip", "--verbose", f"--file=\"{result}\"", f"\"{new_folder_path}\""])
+    run_command(cmd=f"tar -czvf {result} {new_folder_path}")
+    logging.info(f"compliant tarball can be found in {result}")
     return False, result, new_folder_path
 
 
@@ -536,16 +543,20 @@ def main():
     if is_valid:
         # move the tarball "tarballpath" in the position where "debuild" wants, which is in the
         # same directory containin the source tree folder
+        dst = os.path.abspath(os.path.join(source_tree_directory, "..", os.path.basename(tarball_path)))
+        logging.info(f"renaming {tarball_path} into {dst}")
         os.rename(
             src=tarball_path,
-            dst=os.path.abspath(os.path.join(source_tree_directory, "..", os.path.basename(tarball_path)))
+            dst=dst
         )
     else:
         # move the tarbal "tarball" in the position where "debuild" wants, which is in the
         # same directory containin the source tree folder
+        dst = os.path.abspath(os.path.join(source_tree_directory, "..", os.path.basename(tarball)))
+        logging.info(f"renaming {tarball} into {dst}")
         os.rename(
             src=tarball,
-            dst=os.path.abspath(os.path.join(source_tree_directory, "..", os.path.basename(tarball)))
+            dst=dst
         )
 
     debian_folder, source_folder = generate_debian_folder(output_directory=source_tree_directory)
