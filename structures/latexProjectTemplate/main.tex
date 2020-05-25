@@ -14,6 +14,30 @@
 \usepackage{enumitem}
 \usepackage{graphicx}
 \usepackage{diagbox}
+\usepackage{listings}
+
+% BIBLIOGRAPHY
+
+\usepackage[nottoc,numbib]{tocbibind}
+
+% GLOSSARIES
+
+\usepackage[acronym,toc]{glossaries}
+
+% SYMBOLS
+
+\usepackage{pifont}
+\usepackage{fontawesome}
+
+% URL
+
+\usepackage{url}
+
+% WARNING NOTES
+
+\usepackage{mdframed}
+
+
 
 % PROOF READING
 
@@ -47,6 +71,7 @@
 
 \input{src/cmds/commons.tex}
 \input{src/cmds/commands-shared.tex}
+\input{src/cmds/commands-listing.tex}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % GEOMTRIES
@@ -76,6 +101,13 @@
 \newtheorem{lemma}[theorem]{Lemma}
 
 \newtheorem{definition}{Definition}[section]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ACRONYMS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{src/glossaries/acronym.tex}
+\makeglossaries
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % MAIN DOCUMENT

@@ -6,6 +6,25 @@
 
 \makeatletter
 
+% Add a reference to a section
+% param1 the label of the section
+\NewDocumentCommand{\listingref}{m}{%
+    Listing \ref{#1}%
+}
+
+
+% Add a reference to a subsubsection
+% param1 the label of the subsubsection
+\NewDocumentCommand{\subsubsectionref}{m}{%
+    Sub Sub Section \ref{#1}%
+}
+
+% Add a reference to a section
+% param1 the label of the section
+\NewDocumentCommand{\sectionref}{m}{%
+    Section \ref{#1}%
+}
+
 % Add a reference to a equation
 % param1 the label of the equation
 \NewDocumentCommand{\equationref}{m}{%
@@ -14,14 +33,14 @@
 
 % Add a reference to a algorithm line
 % param1 the label of the algorithm line
-\NewDocumentCommand{\lineref}{m}{%
+\NewDocumentCommand{\alglineref}{m}{%
     Line \ref{#1}%
 }
 
 % Add a reference to a algorithm line
 % param1 the label of the algorithm where piece starts
 % param1 the label of the algorithm where priece ends
-\NewDocumentCommand{\linesref}{m m}{%
+\NewDocumentCommand{\alglinesref}{m m}{%
     Lines \ref{#1}--\ref{#2}%
 }
 
@@ -90,6 +109,50 @@
 \NewDocumentCommand{\exampleref}{m}{%
     Example \ref{#1}%
 }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% WARNING AND NOTES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NewDocumentEnvironment{attention}{}{%
+    \par%
+        \begin{mdframed}[linewidth=3pt,linecolor=red]%
+            \begin{list}{}{\leftmargin=1cm \labelwidth=\leftmargin}%
+                \item[\Large\faBomb]%
+}{%
+            \end{list}%
+        \end{mdframed}%
+    \par
+}
+
+\NewDocumentEnvironment{warning}{}{%
+    \par%
+        \begin{mdframed}[linewidth=3pt,linecolor=orange]%
+            \begin{list}{}{\leftmargin=1cm \labelwidth=\leftmargin}%
+                \item[\Large\faWarning]%
+}{%
+            \end{list}%
+        \end{mdframed}%
+    \par
+}
+
+\NewDocumentEnvironment{info}{}{%
+    \par%
+        \begin{mdframed}[linewidth=3pt,linecolor=blue]%
+            \begin{list}{}{\leftmargin=1cm \labelwidth=\leftmargin}%
+                \item[\Large\faBook]%
+}{%
+            \end{list}%
+        \end{mdframed}%
+    \par
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% EXAMPLE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\theoremstyle{definition}
+\newtheorem{example}{Example}[section]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % USEFUL COMMANDS
