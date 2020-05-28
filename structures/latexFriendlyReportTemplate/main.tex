@@ -15,10 +15,17 @@
 \usepackage{graphicx}
 \usepackage{diagbox}
 \usepackage{listings}
+\usepackage[utf8]{inputenc}
+\usepackage{rotating} %sideways environment
 
 % BIBLIOGRAPHY
 
 \usepackage[nottoc,numbib]{tocbibind}
+
+% TABLES
+
+\usepackage{booktabs}
+\usepackage{makecell}
 
 % GLOSSARIES
 
@@ -28,6 +35,7 @@
 
 \usepackage{pifont}
 \usepackage{fontawesome}
+\usepackage{textcomp} %TM
 
 % URL
 
@@ -70,6 +78,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \input{src/cmds/commons.tex}
+\input{src/cmds/commons-easy.tex}
 \input{src/cmds/commands-shared.tex}
 \input{src/cmds/commands-listing.tex}
 
@@ -131,7 +140,7 @@
     \centering
     \vfill
     {\bfseries\Large
-        Driver development for Openware Report
+        Title
         
         \vskip2cm
 
@@ -175,6 +184,12 @@
 
 \backmatter
 
+%\printnoidxglossaries
+%\printnoidxglossary[type=\acronymtype, sort={use}]
+\printglossary[type=\acronymtype]
+\clearpage
+%\printglossaries
+\clearpage
 \input{src/texs/90-bibliography.tex}
 
 \end{document}
