@@ -1,0 +1,431 @@
+@startuml
+
+skinparam useBetaStyle true
+
+' style enclosure declaration
+<style file="class.css">
+
+
+	'class definition: AbstractSubsystemFactory
+	abstract class "AbstractSubsystemFactory" {
+}
+
+	'class definition: IOpenwareEventable
+	interface "IOpenwareEventable" {
+}
+
+	'class definition: ISupportThreadOwner`1
+	interface "ISupportThreadOwner<ThreadLoopInstructionsContext>" {
+}
+
+	'class definition: PropertyGroup
+	class "PropertyGroup" {
+}
+
+	'class definition: AbstractSubsystem
+	abstract class "AbstractSubsystem" {
+}
+
+	'class definition: LogicalId
+	class "LogicalId" {
+}
+
+	'class definition: IApplicationDeclaration
+	interface "IApplicationDeclaration" {
+	+ get  DeviceTypes : ISet<DeviceOpenwareType>
+	+ get  EventTypes : ISet<EventOpenwareType>
+	+ get  CommandTypes : ISet<CommandDeviceRelatedOpenwareType>
+}
+
+	'class definition: IApplicationDefinition
+	interface "IApplicationDefinition" {
+	+ get  Declaration : IApplicationDeclaration
+	+ Add(subsystem: ISubsystem) : Void
+}
+
+	'class definition: ICommandDeclaration
+	interface "ICommandDeclaration" {
+	+ get  Title : StringId
+	+ get  Description : StringId
+	+ get  Type : CommandDeviceRelatedOpenwareType
+	+ get  DeclaredProperties : IReadOnlyDictionary<String,IPropertyDeclaration>
+	+ get  Properties : IReadOnlyDictionary<String,IPropertyDefinition>
+	+ get  Since : SemVersion
+	+ get  Item : IPropertyDeclaration
+	+ ContainsProperty(propertyName: String) : Boolean
+	+ EnsureCompliance(externalCommand: ICommandDeclaration,context: String) : Void
+}
+
+	'class definition: IDeviceDeclaration
+	interface "IDeviceDeclaration" {
+	+ get  Type : DeviceOpenwareType
+	+ get  Title : StringId
+	+ get  Description : StringId
+	+ get  ParameterDeclarations : IReadOnlyDictionary<String,IStateParameterDeclaration>
+	+ get  SendableEvents : IList<IEventDeclaration>
+	+ get  AcceptableCommands : IList<ICommandDeclaration>
+	+ get  Properties : IReadOnlyDictionary<String,IPropertyDefinition>
+	+ GetStatusParameters() : IEnumerable<ValueTuple<String,IStateParameterDeclaration>>
+	+ AcceptCommand(command: CommandDeviceRelatedOpenwareType) : Boolean
+	+ FindCommandByType(command: CommandDeviceRelatedOpenwareType) : Optional<ICommandDeclaration>
+	+ FindEventByType(type: EventOpenwareType) : Optional<IEventDeclaration>
+	+ EnsureCompliance(externalDeclaration: IDeviceDeclaration,context: String) : Void
+}
+
+	'class definition: IDeviceDefinition
+	interface "IDeviceDefinition" {
+	+ get  Declaration : IDeviceDeclaration
+	+ get  StateParameters : IReadOnlyDictionary<String,IStateParameter>
+	+ get  PhysicalId : Optional<PhysicalId>
+	+ get  LogicalId : LogicalId
+	+ GetStatusData() : IReadOnlyDictionary<String,Object>
+	+ GetCustomData() : IReadOnlyDictionary<String,Object>
+	+ Invoke(command: CommandDeviceRelatedOpenwareType,functionArguments: IDictionary<String,Object>) : Void
+	+ SynchronizeDeviceStatus(token: CancellationToken) : Task
+}
+
+	'class definition: AbstractDriverDefinition
+	abstract class "AbstractDriverDefinition" {
+	# properties : IDictionary<String,IPropertyDefinition>
+	# managedSubsystems : IList<ISubsystem>
+	# tcpServer : OpenwareDriverTcpServer
+	# factory : AbstractDriverFactory
+	+ get # set Declaration : IDriverDeclaration
+}
+note top of "AbstractDriverDefinition"
+This class contains much of the driver code
+end note
+
+	'class definition: StandardDriverDefinition
+	class "StandardDriverDefinition" {
+	# properties : IDictionary<String,IPropertyDefinition>
+	# managedSubsystems : IList<ISubsystem>
+	# tcpServer : OpenwareDriverTcpServer
+	# factory : AbstractDriverFactory
+	+ get # set Declaration : IDriverDeclaration
+}
+
+	'class definition: IEventDeclaration
+	interface "IEventDeclaration" {
+	+ get  Type : EventOpenwareType
+	+ get  Title : StringId
+	+ get  Description : StringId
+	+ get  DeclaredProperties : IReadOnlyDictionary<String,IPropertyDeclaration>
+	+ get  Properties : IReadOnlyDictionary<String,IPropertyDefinition>
+	+ get  Since : SemVersion
+	+ get  Priority : Priority
+	+ EnsureCompliance(externalEvent: IEventDeclaration,context: String) : Void
+	+ EnsureCompliance(event: IEventDeclaration) : Void
+}
+
+	'class definition: AbstractDriverFactory
+	abstract class "AbstractDriverFactory" {
+	- registrations : List<ISubsystemFactory>
+	+ GeneratePropertyDeclaration(name: String,varType: IVarType,hasDefault: Boolean,default: Object,title: StringId,description: StringId,groups: ISet<PropertyGroup>) : IPropertyDeclaration
+	+ GeneratePropertyDefinition(name: String,varType: IVarType,hasDefault: Boolean,default: Object,title: StringId,description: StringId,value: Object,groups: ISet<PropertyGroup>) : IPropertyDefinition
+	+ GenerateStateParameter(declaration: IStateParameterDeclaration,value: Object) : IStateParameter
+	+ GenerateStateParameterDeclaration(name: String,title: StringId,description: StringId,type: IVarType,hasDefault: Boolean,default: Object,groups: ISet<PropertyGroup>,eventClass: OpenwareEventClassEnum) : IStateParameterDeclaration
+	+ GenerateEventDeclaration(type: EventOpenwareType,properties: IDictionary<String,IPropertyDefinition>,declaredProperties: IDictionary<String,IPropertyDeclaration>,title: StringId,description: StringId) : IEventDeclaration
+	+ GenerateEventDefinition(declaration: IEventDeclaration,actualProperties: IDictionary<String,Object>,state: OpenwareEventStatusEnum,header: String,sourceType: OpenwareEventCategoryEnum,source: IDeviceDefinition) : IEventDefinition
+	+ GenerateCommandDeclaration(type: CommandDeviceRelatedOpenwareType,name: StringId,description: StringId,properties: IDictionary<String,IPropertyDefinition>,declaredProperties: IDictionary<String,IPropertyDeclaration>) : ICommandDeclaration
+	+ GenerateDeviceDeclaration(type: DeviceOpenwareType,properties: IDictionary<String,IPropertyDefinition>,parameterDeclarations: IDictionary<String,IStateParameterDeclaration>,sendableEvents: IList<IEventDeclaration>,acceptableCommands: IList<ICommandDeclaration>,title: StringId,description: StringId) : IDeviceDeclaration
+	# GenerateAllApplications() : IImmutableSet<IApplicationDefinition>
+	+ GenerateDriverDeclaration(properties: IEnumerable<IPropertyDeclaration>) : IDriverDeclaration
+	+ GenerateRequiredDriverDeclaration() : IDriverDeclaration
+	# GenerateDriverDefinition(declaration: IDriverDeclaration,properties: IDictionary<String,IPropertyDefinition>) : IDriverDefinition
+	+ GenerateDriverContextWithSubsystemFromCache(configurationFile: DriverConfigurationFile) : DriverContext
+	# GetSubsystemFactory(codename: String,codeversion: SemVersion) : ISubsystemFactory
+	- generateSubsystem(codeName: String,codeVersion: SemVersion,properties: IDictionary<String,Object>,application: IApplicationDefinition,driver: IDriverDefinition,detectDevices: Boolean,addToDriver: Boolean,forceAutomaticDetection: Boolean,startSubsystemThread: Boolean,addToApplication: Boolean,generateDriverCacheFile: Boolean) : TSUBSYSTEM
+	+ GenerateSubsystemWithDevices(codeName: String,codeVersion: SemVersion,properties: IDictionary<String,Object>,application: IApplicationDefinition,driver: IDriverDefinition,addToDriver: Boolean,forceAutomaticDetection: Boolean,startSubsystemThread: Boolean,generateDriverCacheFile: Boolean) : TSUBSYSTEM
+	+ GenerateSubsystemWithDevicesFromDriverCache(driver: IDriverDefinition,application: IApplicationDefinition,addToDriver: Boolean,startSubsystemThread: Boolean,addToApplication: Boolean) : Optional<TSUBSYSTEM>
+	+ PerformDeviceDiscovery(subsystemCodeName: String,subsystemCodeVersion: SemVersion,subsystem: TSUBSYSTEM,forceAutomaticDetection: Boolean,generateDriverCacheFile: Boolean) : Void
+	- populateSubsystemDrivers(subsystemCodeName: String,subsystemCodeVersion: SemVersion,subsystemFactory: ISubsystemFactory,subsystem: ISubsystem,forceAutomaticDetection: Boolean,generateDriverCacheFile: Boolean) : Void
+	+ GetDriverCachePath() : String
+	+ GenerateSchemas(driver: IDriverDefinition,codeName: String,codeVersion: SemVersion,outputDirectory: String,i18nCodes: List<String>) : Void
+}
+
+	'class definition: ISubsystemFactory
+	interface "ISubsystemFactory" {
+	+ BuildSubsystem(name: String,application: IApplicationDefinition,properties: IDictionary<String,Object>,driver: IDriverDefinition,factory: AbstractDriverFactory) : ISubsystem
+	+ BuildDevice(class: String,version: SemVersion,subsystem: ISubsystem,physicalId: PhysicalId,logicalId: LogicalId,factory: AbstractDriverFactory) : IDeviceDefinition
+	+ GenerateOpenwareSchemas(compliantDriverDeclaration: IDriverDeclaration,directory: String,i18nCodes: IList<String>,factory: AbstractDriverFactory) : Void
+}
+
+	'class definition: IDriverDeclaration
+	interface "IDriverDeclaration" {
+	+ get  Properties : IReadOnlyDictionary<String,IPropertyDeclaration>
+}
+
+	'class definition: IDriverDefinition
+	interface "IDriverDefinition" {
+	+ get  Declaration : IDriverDeclaration
+	+ get  DriverId : Optional<Guid>
+	+ get  Properties : IReadOnlyDictionary<String,IPropertyDefinition>
+	+ GetDriverProperties() : IReadOnlyDictionary<String,Object>
+	+ StartDriver() : Void
+	+ StopDriver() : Void
+	+ StartDriverServer(cancellationToken: CancellationToken) : Task
+	+ ChangeDriverServer(cancellationToken: CancellationToken) : Task
+	+ StopDriverServer(cancellationToken: CancellationToken) : Task
+	+ SendMessageToOpenware(message: DriverOpenwareMessage<DriverReplyData<Object>>) : Task
+	+ TrySubscribingToEvents() : Void
+	+ TryUnsubscribeToEvents() : Void
+	+ FindDeviceByLogicalId(id: LogicalId) : Optional<IDeviceDefinition>
+	+ FindDeviceByLogicalId(id: LogicalId,subsystem: ISubsystem) : Optional<IDeviceDefinition>
+	+ CanManage(device: IDeviceDeclaration) : Boolean
+	+ StartSubsystemSupportThreads() : Void
+	+ StopSubsystemSupportThreads() : Void
+	+ UpdateDriverProperties(changedParams: List<ValueTuple<IPropertyDeclaration,ChangedValue<Object>>>) : Void
+}
+
+	'class definition: IVarType
+	interface "IVarType" {
+	+ GetObjectFromValue(from: Object) : Object
+	+ ConvertValueToJSON(obj: Object) : Object
+	+ GetTypeRepresentationToJsonString() : String
+	+ GetJSONAdditionalTypeRepresentation() : IDictionary<String,Object>
+	+ ParseValueFromJSON(jsonValue: String,context: Object) : IVarType
+}
+
+	'class definition: Priority
+	class "Priority" {
+}
+
+	'class definition: IPropertyDeclaration
+	interface "IPropertyDeclaration" {
+	+ get  Title : StringId
+	+ get  Description : StringId
+	+ get  VarType : IVarType
+	+ get  Groups : IReadOnlySet<PropertyGroup>
+	+ EnsureCompliance(property: IPropertyDeclaration,context: String) : Void
+}
+
+	'class definition: IPropertyDefinition
+	interface "IPropertyDefinition" {
+	+ get  Declaration : IPropertyDeclaration
+}
+
+	'class definition: IStateParameter
+	interface "IStateParameter" {
+	+ get  Declaration : IStateParameterDeclaration
+}
+
+	'class definition: IStateParameterDeclaration
+	interface "IStateParameterDeclaration" {
+	+ EnsureCompliance(stateParameterDeclaration: IStateParameterDeclaration,context: String) : Void
+}
+
+	'class definition: IDVRPhysicalSystem
+	interface "IDVRPhysicalSystem" {
+}
+
+	'class definition: IPhysicalSubsystem
+	interface "IPhysicalSubsystem" {
+}
+
+	'class definition: ISubsystem
+	interface "ISubsystem" {
+	+ get  Properties : IReadOnlyDictionary<String,IPropertyDefinition>
+	+ AddDevice(device: IDeviceDefinition) : Void
+	+ PerformDeviceDiscovery(factory: AbstractDriverFactory) : Task<List<IDeviceDefinition>>
+	+ SynchronizeDeviceStatus(token: CancellationToken) : Task
+	+ FindDeviceByLogicalId(id: LogicalId) : Optional<IDeviceDefinition>
+}
+
+	'class definition: BooleanVarType
+	class "BooleanVarType" {
+}
+
+	'class definition: IntegerVarType
+	class "IntegerVarType" {
+}
+
+	'class definition: StringVarType
+	class "StringVarType" {
+}
+
+	'class definition: CommandDeviceRelatedOpenwareType
+	class "CommandDeviceRelatedOpenwareType" {
+}
+
+	'class definition: DeviceOpenwareType
+	class "DeviceOpenwareType" {
+}
+
+	'class definition: EventOpenwareType
+	class "EventOpenwareType" {
+}
+
+	'class definition: OpenwareType
+	class "OpenwareType" {
+}
+
+	'class definition: AbstractTcpServer`2
+	abstract class "AbstractTcpServer<DriverOpenwareMessage<DriverReplyData<Object>>,DriverOpenwareMessage<RemoteRequestData>>" {
+}
+
+	'class definition: OpenwareDriverTcpServer
+	class "OpenwareDriverTcpServer" {
+}
+
+	'class definition: Optional`1
+	class "Optional<PhysicalId>" {
+}
+
+	'class definition: Optional`1
+	class "Optional<IDriverDefinition>" {
+}
+
+	'class definition: Optional`1
+	class "Optional<Guid>" {
+}
+
+	'class definition: StringId
+	class "StringId" {
+}
+
+	'class definition: AbstractEnumLikeClass`1
+	class "AbstractEnumLikeClass<ModelEnum>" {
+}
+
+	'class definition: Secret
+	class "Secret" {
+}
+
+	'class definition: GamsSubsystem
+	class "GamsSubsystem" {
+	- timeFormat : TimeFormatEnum
+	- pixelFormat : PixelFormatEnum
+	+ get + set Model : ModelEnum
+	+ get + set Password : Secret
+	+ TryLogin() : LoginSession
+	# TryLoginAsynchronous(cancellationToken: CancellationToken) : Task<LoginSession>
+}
+
+	'class definition: GamsSubsystemFactory
+	class "GamsSubsystemFactory" {
+}
+
+	'class definition: Camera
+	class "Camera" {
+}
+
+	'class definition: ConnectionHandle
+	class "ConnectionHandle" {
+}
+
+	'class definition: ModelEnum
+	class "ModelEnum" {
+}
+
+	'class definition: PixelFormatEnum
+	enum "PixelFormatEnum" {
+}
+
+	'class definition: TimeFormatEnum
+	enum "TimeFormatEnum" {
+}
+
+	'class definition: AudioSession
+	class "AudioSession" {
+}
+
+	'class definition: LoginSession
+	class "LoginSession" {
+	~ get - set Session : ConnectionHandle
+	+ DisableKeepAlive() : Void
+	+ SendSingleKeepAlive() : Void
+	+ TestConnection() : Void
+	+ Logout() : Void
+	~ GetFrameFromCamera(camera: Camera,pollingMs: Int32,cancellationToken: CancellationToken) : Task<Frame>
+	+ OpenLiveStream(cam: Camera,secret: String) : LiveStreamSession
+	+ PauseAllLiveStreams(pause: Boolean) : Void
+	+ OpenPTZSessions(cam: Camera) : PtzCameraSession
+}
+
+	'class definition: SemVersion
+	class "SemVersion" {
+}
+
+"ISubsystem" .up.|> "ISupportThreadOwner<ThreadLoopInstructionsContext>"
+"ISubsystem" --> "1..n" "IPropertyDefinition": ""
+"ISubsystem" "1"-- "1..n" "IDeviceDefinition": ""
+"ISubsystem" "0..n"-- "1" "IApplicationDefinition": ""
+"ISubsystem" "0..n"-- "1" "Optional<IDriverDefinition>": ""
+"IPropertyDeclaration" --> "1" "StringId": ""
+"IPropertyDeclaration" --> "1" "StringId": ""
+"IPropertyDeclaration" --> "1" "IVarType": ""
+"IPropertyDeclaration" --> "1..n" "PropertyGroup": ""
+"IPropertyDefinition" --> "1" "IPropertyDeclaration": ""
+"IDeviceDefinition" .up.|> "ISupportThreadOwner<ThreadLoopInstructionsContext>"
+"IDeviceDefinition" .up.|> "IOpenwareEventable"
+"IDeviceDefinition" --> "1" "IDeviceDeclaration": ""
+"IDeviceDefinition" --> "1..n" "IStateParameter": ""
+"IDeviceDefinition" --> "1" "Optional<PhysicalId>": ""
+"IDeviceDefinition" --> "1" "LogicalId": ""
+"DeviceOpenwareType" -up-|> "OpenwareType"
+"IDeviceDeclaration" --> "1" "DeviceOpenwareType": ""
+"IDeviceDeclaration" --> "1" "StringId": ""
+"IDeviceDeclaration" --> "1" "StringId": ""
+"IDeviceDeclaration" --> "1..n" "IStateParameterDeclaration": ""
+"IDeviceDeclaration" --> "1..n" "IEventDeclaration": ""
+"IDeviceDeclaration" --> "1..n" "ICommandDeclaration": ""
+"IDeviceDeclaration" --> "1..n" "IPropertyDefinition": ""
+"IStateParameterDeclaration" .up.|> "IPropertyDeclaration"
+"EventOpenwareType" -up-|> "OpenwareType"
+"IEventDeclaration" --> "1" "EventOpenwareType": ""
+"IEventDeclaration" --> "1" "StringId": ""
+"IEventDeclaration" --> "1" "StringId": ""
+"IEventDeclaration" --> "1..n" "IPropertyDeclaration": ""
+"IEventDeclaration" --> "1..n" "IPropertyDefinition": ""
+"IEventDeclaration" --> "1" "SemVersion": ""
+"IEventDeclaration" --> "1" "Priority": ""
+"ICommandDeclaration" --> "1" "StringId": ""
+"ICommandDeclaration" --> "1" "StringId": ""
+"ICommandDeclaration" --> "1" "CommandDeviceRelatedOpenwareType": ""
+"ICommandDeclaration" --> "1..n" "IPropertyDeclaration": ""
+"ICommandDeclaration" --> "1" "IPropertyDeclaration": ""
+"ICommandDeclaration" --> "1..n" "IPropertyDefinition": ""
+"ICommandDeclaration" --> "1" "SemVersion": ""
+"CommandDeviceRelatedOpenwareType" -up-|> "OpenwareType"
+"IStateParameter" --> "1" "IStateParameterDeclaration": ""
+"IApplicationDeclaration" --> "1..n" "DeviceOpenwareType": ""
+"IApplicationDeclaration" --> "1..n" "EventOpenwareType": ""
+"IApplicationDeclaration" --> "1..n" "CommandDeviceRelatedOpenwareType": ""
+"IApplicationDefinition" --> "1" "IApplicationDeclaration": ""
+"IApplicationDefinition" "1"-- "1..n" "ISubsystem": ""
+"AbstractSubsystem" .up.|> "ISubsystem"
+"GamsSubsystem" -up-|> "AbstractSubsystem"
+"GamsSubsystem" .up.|> "IDVRPhysicalSystem"
+"GamsSubsystem" --> "1" "ModelEnum": ""
+"GamsSubsystem" --> "1" "Secret": ""
+"IPhysicalSubsystem" .up.|> "ISubsystem"
+"IDVRPhysicalSystem" .up.|> "IPhysicalSubsystem"
+"ModelEnum" -up-|> "AbstractEnumLikeClass<ModelEnum>"
+"AbstractSubsystemFactory" .up.|> "ISubsystemFactory"
+"GamsSubsystemFactory" -up-|> "AbstractSubsystemFactory"
+"GamsSubsystemFactory" .up.|> "ISubsystemFactory"
+"IDriverDeclaration" --> "1..n" "IPropertyDeclaration": ""
+"IDriverDefinition" --> "1" "IDriverDeclaration": ""
+"IDriverDefinition" --> "1" "Optional<Guid>": ""
+"IDriverDefinition" --> "1..n" "IPropertyDefinition": ""
+"IDriverDefinition" "1"-- "1..n" "ISubsystem": ""
+"AbstractDriverDefinition" .up.|> "IDriverDefinition"
+"AbstractDriverDefinition" --> "1" "OpenwareDriverTcpServer": ""
+"AbstractDriverDefinition" --> "1" "AbstractDriverFactory": ""
+"AbstractDriverDefinition" --> "1" "IDriverDeclaration": ""
+"OpenwareDriverTcpServer" -up-|> "AbstractTcpServer<DriverOpenwareMessage<DriverReplyData<Object>>,DriverOpenwareMessage<RemoteRequestData>>"
+"AbstractDriverFactory" --> "1..n" "ISubsystemFactory": ""
+"StandardDriverDefinition" -up-|> "AbstractDriverDefinition"
+"StandardDriverDefinition" .up.|> "IDriverDefinition"
+"StandardDriverDefinition" --> "1" "OpenwareDriverTcpServer": ""
+"StandardDriverDefinition" --> "1" "AbstractDriverFactory": ""
+"StandardDriverDefinition" --> "1" "IDriverDeclaration": ""
+"BooleanVarType" .up.|> "IVarType"
+"StringVarType" .up.|> "IVarType"
+"IntegerVarType" .up.|> "IVarType"
+"LoginSession" --> "1" "ConnectionHandle": ""
+"LoginSession" --> "1" "GamsSubsystem": ""
+"LoginSession" --> "1..n" "Camera": ""
+"LoginSession" "1"-- "1" "AudioSession": ""
+@enduml

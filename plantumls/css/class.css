@@ -1,0 +1,322 @@
+root {
+  FontName SansSerif
+  HyperLinkColor blue
+  FontColor black
+  FontSize 14
+  FontStyle plain
+  HorizontalAlignment left
+  RoundCorner 0
+  DiagonalCorner 0
+  LineThickness 1.0
+  LineColor #A80036
+  BackGroundColor #FEFECE
+  Shadowing 0.0
+}
+
+document {
+  BackGroundColor White
+}
+
+stereotype {
+  FontStyle italic
+}
+
+title {
+  HorizontalAlignment center
+  FontSize 14
+  FontStyle bold
+  Padding 5
+  Margin 5
+  LineColor none
+  BackGroundColor none
+}
+
+header {
+  HorizontalAlignment right
+  FontSize 10
+  FontColor #888888
+  BackGroundColor none
+  LineColor none
+}
+
+footer {
+  HorizontalAlignment center
+  FontSize 10
+  FontColor #888888
+  BackGroundColor none
+  LineColor none
+}
+
+legend {
+  LineColor black
+  BackGroundColor #DDDDDD
+  FontSize 14
+  RoundCorner 15
+  Padding 6
+  Margin 8
+}
+
+caption {
+  HorizontalAlignment center
+  FontSize 14
+  Padding 0
+  Margin 1
+  LineColor none
+  BackGroundColor none
+}
+
+
+element {
+  Shadowing 4.0
+}
+
+sequenceDiagram {
+}
+
+
+'scope to class diagrams
+classDiagram {
+
+	'scope to the class blocks. Work with abstraact classes and interfaces ass well.
+	class {
+		' color of the font use to write fields and method of a class
+		FontColor: Blue
+		' font used to write fields and methods fo a class. Sysetm dependent. To get the available fonts, create an empty uml and writes:
+		' @startuml 
+		' listfonts 
+		' @enduml 
+		' See https://plantuml.com/font
+		FontName: Courier
+		' size of the font used to write fields and methods of the class.
+		FontSize: 20
+		' style to use for the font used to write fields and methods of the class. Accepted values are: bold, italic
+		FontStyle: italic
+		' Background color of the whole rectangle representing the class
+		BackGroundColor: White
+		HyperLinkColor: White
+		' Set the color of the lines used to draw the entire box of the class. Does not alter the class type icon.
+		LineColor: Red
+		'LineThickness: 10
+		' Not implemented but each number should represents a different type of line (e.g., dashed, dotted, solid)
+		'LineStyle: 2
+		'Padding: 10
+		'Margin: 10
+		'RoundCorner: 40
+		'DiagonalCorner: 5
+		'Image:
+		'ImagePosition:
+		'MinimumWidth: 40
+		'MaximumWidth: 80
+		'HorizontalAlignment: right
+		'header {
+		'	BackgroundColor: Blue
+		'}
+
+
+	}
+
+	' determine how to draw the associations and dependencies in the diagrma
+	arrow {
+		' color used to draw the label of the edge
+		FontColor: Black
+		' font used to draw the label of the edge
+		FontName: Courier
+		' size of the font used to draw the label of the edge
+		FontSize: 25
+		' style of the used used to draw the label of the edge
+		FontStyle: italic
+		Color: Yellow
+		'LineThickness: 10
+		'HeadColor: Black
+		' unused
+		'BackGroundColor: Green
+
+	}
+
+}
+
+
+group {
+  BackGroundColor white
+  LineColor black
+  LineThickness 2.0
+  FontSize 11
+  
+  FontStyle bold
+}
+
+groupHeader {
+  BackGroundColor #EEEEEE
+  LineColor black
+
+  FontSize 13
+  FontStyle bold
+}
+
+lifeLine {
+  BackGroundColor white
+}
+
+destroy {
+}
+
+reference {
+  FontSize 12
+  LineColor black
+  BackGroundColor while
+  LineThickness 2.0
+  HorizontalAlignment center
+}
+
+referenceHeader {
+  LineColor black
+  BackGroundColor #EEEEEE
+  FontColor black
+  FontSize 13
+  FontStyle bold
+  LineThickness 2.0
+}
+
+box {
+  BackGroundColor #DDDDDD
+
+  FontSize 13
+  FontStyle bold
+}
+
+separator {
+  LineColor black
+  LineThickness 2.0
+  BackGroundColor #EEEEEE
+  
+  FontSize 13
+  FontStyle bold
+}
+
+delay {
+  FontSize 11
+  FontStyle plain
+  HorizontalAlignment center
+}
+
+participant {
+  LineThickness 1.5
+  HorizontalAlignment center
+}
+
+actor {
+  LineThickness 2.0
+  HorizontalAlignment center
+}
+
+boundary {
+  LineThickness 2.0
+  HorizontalAlignment center
+}
+
+control {
+  LineThickness 2.0
+  HorizontalAlignment center
+}
+
+entity {
+  LineThickness 2.0
+  HorizontalAlignment center
+}
+
+queue {
+  LineThickness 2.0
+  HorizontalAlignment center
+}
+
+database {
+  HorizontalAlignment center
+}
+
+collections {
+  LineThickness 1.5
+  HorizontalAlignment center
+}
+
+swimlane {
+  BackGroundColor none
+  LineColor black
+  LineThickness 2
+  FontSize 18
+}
+
+diamond {
+  Shadowing 3.0
+}
+
+arrow {
+  FontSize 13
+}
+
+note {
+  FontSize 13
+  BackGroundColor #FBFB77
+}
+
+partition {
+}
+
+circle {
+}
+
+mindmapDiagram {
+}
+
+mindmapDiagram {
+	node {
+	    Padding 10
+	    Margin 10
+	    RoundCorner 25
+	    LineThickness 1.5
+	}
+	arrow {
+	    LineThickness 1.0
+	}
+}
+
+
+wbsDiagram {
+    Padding 10
+    Margin 15
+    RoundCorner 0
+    LineThickness 1.5
+    FontSize 12
+}
+
+activityDiagram {
+  Shadowing 3.0
+}
+
+activityDiagram {
+	activity {
+	    LineThickness 1.5
+	    Padding 10
+	    FontSize 12
+	    RoundCorner 25
+	}
+	partition {
+	    LineColor black
+	    BackgroundColor none
+	}
+	diamond {
+	    FontSize 11
+	}
+	arrow {
+	    FontSize 11
+	}
+}
+
+activityBar {
+	LineColor black
+}
+
+circle {
+	LineColor black
+	Shadowing 3.0
+}
+
