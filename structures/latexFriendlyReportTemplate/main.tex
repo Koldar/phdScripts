@@ -1,4 +1,4 @@
-\documentclass[a4]{article}
+\documentclass[oneside]{book}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % PACKAGES
@@ -13,13 +13,19 @@
 \usepackage{xstring}
 \usepackage{enumitem}
 \usepackage{graphicx}
-\usepackage{grffile} % https://tex.stackexchange.com/a/110518/145331
 \usepackage{diagbox}
 \usepackage{listings}
+\usepackage[utf8]{inputenc}
+\usepackage{rotating} %sideways environment
 
 % BIBLIOGRAPHY
 
 \usepackage[nottoc,numbib]{tocbibind}
+
+% TABLES
+
+\usepackage{booktabs}
+\usepackage{makecell}
 
 % GLOSSARIES
 
@@ -29,6 +35,7 @@
 
 \usepackage{pifont}
 \usepackage{fontawesome}
+\usepackage{textcomp} %TM
 
 % URL
 
@@ -71,6 +78,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \input{src/cmds/commons.tex}
+\input{src/cmds/commons-easy.tex}
 \input{src/cmds/commands-shared.tex}
 \input{src/cmds/commands-listing.tex}
 
@@ -90,7 +98,18 @@
 
 \title{}
 \author{}
-\date{\today}
+\date{%
+    \today
+
+    Version: 0.1.1
+
+    \begin{figure}
+        \centering
+        \includegraphics{src/images/logo}
+    \end{figure}
+}
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % THEOREMS
@@ -116,7 +135,27 @@
 
 \begin{document}
 
-\maketitle
+%see https://tex.stackexchange.com/a/13920/145331
+\begin{titlepage}
+    \centering
+    \vfill
+    {\bfseries\Large
+        Title
+        
+        \vskip2cm
+
+        authors
+        
+        \vskip2cm
+
+        Version
+        \\
+    }    
+    \vfill
+    \includegraphics[width=0.8\textwidth]{src/images/logo}
+    \vfill
+    \vfill
+\end{titlepage}
 \clearpage
 
 \tableofcontents
@@ -131,11 +170,25 @@
 %\listoftables
 %\clearpage
 
-%\input{src/texs/add-tex.tex}
+\frontmatter
+
 
 \clearpage
-\input{src/texs/glossary.tex}
 
+
+\mainmatter
+
+
+\clearpage
+
+
+\backmatter
+
+%\printnoidxglossaries
+%\printnoidxglossary[type=\acronymtype, sort={use}]
+\printglossary[type=\acronymtype]
+\clearpage
+%\printglossaries
 \clearpage
 \input{src/texs/90-bibliography.tex}
 
