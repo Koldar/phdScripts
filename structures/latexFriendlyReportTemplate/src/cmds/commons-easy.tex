@@ -75,22 +75,47 @@
     \textit{#1}%
 }
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% GLOSSARIES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % Display the given acronym 
 % param1 name of the acronym to print
-\NewDocumentCommand{\acr}{m}{%
-    \acrshort{#1}%
+\NewDocumentCommand{\acronymRef}{m}{%
+   \gls{#1}%
+}
+
+
+% Display the given acronym 
+% param1 name of the acronym to print
+\NewDocumentCommand{\acrref}{m}{%
+   \gls{#1}%
 }
 
 % Display a glossary entry with the first letter as miniscule.
 %This is just a more rememberable alias of \gls
 % param1 name of the glossary entry to cite. 
-\NewDocumentCommand{\citeglossary}{m}{%
+\NewDocumentCommand{\glossaryRef}{m}{%
     \gls{#1}%
 }
 
 % Display a glossary entry with the first letter as capital.
 %This is just a more rememberable alias of \Gls
 % param1 name of the glossary entry to cite. 
-\NewDocumentCommand{\citeGlossary}{m}{%
+\NewDocumentCommand{\GlossaryRef}{m}{%
+    \Gls{#1}%
+}
+
+% Display a glossary entry with the first letter as miniscule.
+%This is just a more rememberable alias of \gls
+% param1 name of the glossary entry to cite. 
+\NewDocumentCommand{\glsref}{m}{%
+    \gls{#1}%
+}
+
+% Display a glossary entry with the first letter as capital.
+%This is just a more rememberable alias of \Gls
+% param1 name of the glossary entry to cite. 
+\NewDocumentCommand{\Glsref}{m}{%
     \Gls{#1}%
 }

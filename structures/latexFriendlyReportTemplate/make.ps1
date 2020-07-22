@@ -63,26 +63,37 @@ function MakeFast ($latexCC, $mainSrc, $latexAdditionalFlags, $latexStandardFlag
     $latexAdditionalFlagsArray = $latexAdditionalFlags.Split(" ");
     $latexStandardFlagsArray = $latexStandardFlags.Split(" ");
     $completeLatex = $latexAdditionalFlagsArray + $latexStandardFlagsArray + "$mainSrc.tex";
+    Write-Host -ForegroundColor Green "$latexCC $completeLatex";
     & $latexCC $completeLatex;
 }
 
-function MakeAll ($latexCC, $bibtexCC, $mainSrc, $bibtexFlags, $latexStandardFlags, $latexAdditionalFlags, $buildFolder) {
+function MakeAll ($latexCC, $bibtexCC, $makeIndexExe, $mainSrc, $bibtexFlags, $latexStandardFlags, $latexAdditionalFlags, $buildFolder) {
     $latexAdditionalFlagsArray = $latexAdditionalFlags.Split(" ");
     $latexStandardFlagsArray = $latexStandardFlags.Split(" ");
     $completeLatex = $latexAdditionalFlagsArray + $latexStandardFlagsArray + "$mainSrc.tex";
     Write-Host -ForegroundColor Green "compiling first time...";
+    Write-Host -ForegroundColor Green "$latexCC $completeLatex";
     & $latexCC $completeLatex;
 
     $bibtexFlagsArray = $bibtexFlags.Split(" ");
-    $completeBibtex = $bibtexFlagsArray + "$mainSrc";
+    $completeBibtex = $bibtexFlagsArray + " -include-directory .. $mainSrc";
     Write-Host -ForegroundColor Green "compiling bibliography...";
     cd $buildFolder
+    Write-Host -ForegroundColor Green "$bibtexCC $completeBibtex";
     & $bibtexCC $completeBibtex;
     cd ..
 
+    cd $buildFolder
+    Write-Host -ForegroundColor Green "reordering glossary with makeindex";
+    Write-Host -ForegroundColor Green "$makeIndexExe $mainSrc";
+    & $makeIndexExe $mainSrc
+    cd ..
+
     Write-Host -ForegroundColor Green "compiling second time...";
+    Write-Host -ForegroundColor Green "$latexCC $completeLatex";
     & $latexCC $completeLatex;
     Write-Host -ForegroundColor Green "compiling third time...";
+    Write-Host -ForegroundColor Green "$latexCC $completeLatex";
     & $latexCC $completeLatex;
 }
 
@@ -98,8 +109,8 @@ function MakeUml ($plantumlJar, $javaExe) {
     }
 }
 
-function MakeRelease($latexCC, $bibtexCC, $mainSrc, $bibtexFlags, $latexStandardFlags, $latexAdditionalFlags, $releaseFolder, $versionFile, $buildFolder, $outputName) {
-    MakeAll -latexCC $latexCC -bibtexCC $bibtexCC -mainSrc $mainSrc -bibtexFlags $bibtexFlags -latexStandardFlags $latexStandardFlags -latexAdditionalFlags $latexAdditionalFlags -buildFolder $buildFolder;
+function MakeRelease($latexCC, $bibtexCC, $makeIndexExe, $mainSrc, $bibtexFlags, $latexStandardFlags, $latexAdditionalFlags, $releaseFolder, $versionFile, $buildFolder, $outputName) {
+    MakeAll -latexCC $latexCC -bibtexCC $bibtexCC -makeIndexExe $makeIndexExe -mainSrc $mainSrc -bibtexFlags $bibtexFlags -latexStandardFlags $latexStandardFlags -latexAdditionalFlags $latexAdditionalFlags -buildFolder $buildFolder;
 
     if (Test-Path $versionFile -PathType Leaf) {
     } else {
@@ -152,6 +163,7 @@ $buildFolder = $ini["General"]["BUILD_FOLDER"];
 $releaseFolder = $ini["General"]["RELEASE_FOLDER"];
 $latexCC = $ini["General"]["LATEX_CC"];
 $bibtexCC = $ini["General"]["BIBTEX_CC"];
+$makeIndexExe = $ini["General"]["MAKEINDEX_EXE"];
 $mainSrc = $ini["General"]["MAIN_SRC"];
 $outputName = $ini["General"]["OUTPUT_NAME"];
 $releaseName = $ini["General"]["RELEASE_NAME"];
@@ -187,10 +199,10 @@ if ($target -eq "uml") {
     MakeFast -latexCC $latexCC -mainSrc $mainSrc -latexStandardFlags $latexStandardFlags -latexAdditionalFlags $latexFlags;
     Write-Host -ForegroundColor Green "DONE!"
 } elseif ($target -eq "all") {
-    MakeAll -latexCC $latexCC -latexStandardFlags $latexStandardFlags -latexAdditionalFlags $latexFlags -bibtexFlags $bibtexFlags -bibtexCC $bibtexCC -mainSrc $mainSrc -buildFolder $buildFolder;
+    MakeAll -latexCC $latexCC -makeIndexExe $makeIndexExe -latexStandardFlags $latexStandardFlags -latexAdditionalFlags $latexFlags -bibtexFlags $bibtexFlags -bibtexCC $bibtexCC -mainSrc $mainSrc -buildFolder $buildFolder;
     Write-Host -ForegroundColor Green "DONE!"
 } elseif ($target -eq "release") {
-    MakeRelease -latexCC $latexCC -latexStandardFlags $latexStandardFlags -latexAdditionalFlags $latexFlags -bibtexFlags $bibtexFlags -bibtexCC $bibtexCC -mainSrc $mainSrc -releaseFolder $releaseFolder -versionFile $versionFile -buildFolder $buildFolder-outputName $outputName;
+    MakeRelease -latexCC $latexCC -makeIndexExe $makeIndexExe -latexStandardFlags $latexStandardFlags -latexAdditionalFlags $latexFlags -bibtexFlags $bibtexFlags -bibtexCC $bibtexCC -mainSrc $mainSrc -releaseFolder $releaseFolder -versionFile $versionFile -buildFolder $buildFolder-outputName $outputName;
     Write-Host -ForegroundColor Green "DONE!"
 } elseif ($target -eq "clean") {
     MakeClean -buildFolder $buildFolder;

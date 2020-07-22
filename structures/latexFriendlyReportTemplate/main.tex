@@ -15,8 +15,17 @@
 \usepackage{graphicx}
 \usepackage{diagbox}
 \usepackage{listings}
-\usepackage[utf8]{inputenc}
 \usepackage{rotating} %sideways environment
+
+% PROOF READING
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+% URL WITHIN THE PDF
+
+\usepackage{hyperref}
 
 % BIBLIOGRAPHY
 
@@ -27,9 +36,7 @@
 \usepackage{booktabs}
 \usepackage{makecell}
 
-% GLOSSARIES
 
-\usepackage[acronym,toc]{glossaries}
 
 % SYMBOLS
 
@@ -47,10 +54,7 @@
 
 
 
-% PROOF READING
 
-\usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
 
 % TIKZ
 
@@ -72,6 +76,11 @@
 % ALGORITHMS
 
 \usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+
+% GLOSSARIES
+
+\usepackage[toc,acronym,style=index]{glossaries}
+\usepackage[postdot]{glossaries-extra}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % IMPORTS OF CUSTOM COMMANDS
@@ -123,11 +132,18 @@
 \newtheorem{definition}{Definition}[section]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% ACRONYMS
+% GLOSSARIES
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\input{src/glossaries/acronym.tex}
+% see http://tug.ctan.org/macros/latex/contrib/glossaries/glossariesbegin.pdf
+\setabbreviationstyle[acronym]{long-short}% glossaries-extra.sty only
+
+\newglossary*{terms}{Terms}
+%acronym glossary is automatically added by flag acronym \newglossary[alg]{acronym}{acr}{acn}{\acronymname}
+
 \makeglossaries
+\input{src/glossaries/glossary.tex}
+\input{src/glossaries/acronym.tex}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % MAIN DOCUMENT
@@ -158,23 +174,25 @@
 \end{titlepage}
 \clearpage
 
+\frontmatter
+
 \tableofcontents
 \clearpage
 
-%\listoffigures
-%\clearpage
+\listoffigures
+\clearpage
 
 %\listofalgorithms
 %\clearpage
  
-%\listoftables
-%\clearpage
-
-\frontmatter
-
-
+\listoftables
 \clearpage
 
+%\printunsrtglossaries
+\printglossary[type=\acronymtype]
+\clearpage
+
+\input{src/texs/00-about-this-report.tex}
 
 \mainmatter
 
@@ -184,12 +202,9 @@
 
 \backmatter
 
-%\printnoidxglossaries
-%\printnoidxglossary[type=\acronymtype, sort={use}]
-\printglossary[type=\acronymtype]
+\printglossary[type={terms}]
 \clearpage
-%\printglossaries
-\clearpage
+
 \input{src/texs/90-bibliography.tex}
 
 \end{document}
