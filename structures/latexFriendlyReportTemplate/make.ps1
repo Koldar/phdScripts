@@ -57,6 +57,22 @@ function Help () {
 	Write-Output " - release: like 'all' but we will create a pdf in the release directory with a semantic versioning. Useful to keep track a versioning without git."
 	Write-Output " - clean: claer all the contents of build directory"
 	Write-Output " - help: shows this message"
+    Write-Output " - openPdf: open the pdf viewer of the built file"
+    Write-Output " - closePdf: close the pdf viewer of the built file"
+}
+
+function OpenPdf($pdfReaderExe, $pdfReaderOpenFile, $pdfFile) {
+    & ${pdfReaderExe} ${pdfReaderOpenFile} ${pdfFile}
+}
+
+function ClosePdf($pdfReaderExe, $pdfReaderOpenFile, $pdfReaderSupportTabFile, $pdfReaderCloseTabFile, $pdfReaderProcessName, $pdfFile) {
+    if ($pdfReaderSupportTabFile -eq "true") {
+        # use pdfReaderCloseTab to close the pdf file
+        & ${pdfReaderExe} ${pdfReaderCloseTabFile} ${pdfFile}
+    } else {
+        # close the entire process
+        Stop-Process -Force -Name ${pdfReaderProcessName}
+    }
 }
 
 function MakeFast ($latexCC, $mainSrc, $latexAdditionalFlags, $latexStandardFlags) {
