@@ -92,7 +92,7 @@ function MakeAll ($latexCC, $bibtexCC, $makeIndexExe, $mainSrc, $bibtexFlags, $l
     & $latexCC $completeLatex;
 
     $bibtexFlagsArray = $bibtexFlags.Split(" ");
-    $completeBibtex = $bibtexFlagsArray + " -include-directory .. $mainSrc";
+    $completeBibtex = $bibtexFlagsArray + "-include-directory='..' $mainSrc";
     Write-Host -ForegroundColor Green "compiling bibliography...";
     cd $buildFolder
     Write-Host -ForegroundColor Green "$bibtexCC $completeBibtex";
@@ -188,6 +188,12 @@ $bibtexFlags = $ini["General"]["BIBTEX_FLAGS"];
 $plantumlJar = $ini["General"]["PLANTUML_JAR"];
 $javaExe = $ini["General"]["JAVA_EXE"];
 
+$pdfReaderExe = $ini["PDFReader"]["PDF_READER_EXE"];
+$pdfReaderOpenFile = $ini["PDFReader"]["PDF_READER_OPEN_FILE"];
+$pdfReaderSupportTabFile = $ini["PDFReader"]["PDF_READER_SUPPORT_TAB_FILE"];
+$pdfReaderCloseTabFile = $ini["PDFReader"]["PDF_READER_CLOSE_TAB_FILE"];
+$pdfReaderProcessName = $ini["PDFReader"]["PDF_READER_PROCESS_NAME"];
+
 # PROTECTED PROPERTIES
 
 $templateVersion = $ini["General"]["TEMPLATE_VERSION"];
@@ -212,11 +218,29 @@ if ($target -eq "uml") {
     ShowVariables -buildFolder $buildFolder -releaseFolder $releaseFolder -latexCC $latexCC -bibtexCC $bibtexCC -mainSrc $mainSrc -outputName $outputName -releaseName $releaseName -latexFlags $latexFlags -bibtexFlags $bibtexFlags;
     Write-Host -ForegroundColor Green "DONE!"
 } elseif ($target -eq "fast") {
+    $val = Get-Process -Name $pdfReaderProcessName;
+   if ($val.Count -gt 0) {
+        ClosePdf -pdfReaderExe $pdfReaderExe -pdfReaderOpenFile $pdfReaderOpenFile -pdfReaderSupportTabFile $pdfReaderSupportTabFile -pdfReaderCloseTabFile $pdfReaderCloseTabFile -pdfReaderProcessName $pdfReaderProcessName -pdfFile "$buildFolder/$outputName.pdf";
+    }
+    
     MakeFast -latexCC $latexCC -mainSrc $mainSrc -latexStandardFlags $latexStandardFlags -latexAdditionalFlags $latexFlags;
+    
+    $cwd = Get-Location;
+    $actualCwd = $cwd.Path;
+    OpenPdf -pdfReaderExe $pdfReaderExe -pdfReaderOpenFile $pdfReaderOpenFile -pdfFile "${actualCwd}\$buildFolder\$outputName.pdf";
     Write-Host -ForegroundColor Green "DONE!"
 } elseif ($target -eq "all") {
+    $val = Get-Process -Name $pdfReaderProcessName;
+   if ($val.Count -gt 0) {
+        ClosePdf -pdfReaderExe $pdfReaderExe -pdfReaderOpenFile $pdfReaderOpenFile -pdfReaderSupportTabFile $pdfReaderSupportTabFile -pdfReaderCloseTabFile $pdfReaderCloseTabFile -pdfReaderProcessName $pdfReaderProcessName -pdfFile "$buildFolder/$outputName.pdf";
+    }
+    
     MakeAll -latexCC $latexCC -makeIndexExe $makeIndexExe -latexStandardFlags $latexStandardFlags -latexAdditionalFlags $latexFlags -bibtexFlags $bibtexFlags -bibtexCC $bibtexCC -mainSrc $mainSrc -buildFolder $buildFolder;
-    Write-Host -ForegroundColor Green "DONE!"
+    Write-Host -ForegroundColor Green "DONE!";
+
+    $cwd = Get-Location;
+    $actualCwd = $cwd.Path;
+    OpenPdf -pdfReaderExe $pdfReaderExe -pdfReaderOpenFile $pdfReaderOpenFile -pdfFile "${actualCwd}\$buildFolder\$outputName.pdf";
 } elseif ($target -eq "release") {
     MakeRelease -latexCC $latexCC -makeIndexExe $makeIndexExe -latexStandardFlags $latexStandardFlags -latexAdditionalFlags $latexFlags -bibtexFlags $bibtexFlags -bibtexCC $bibtexCC -mainSrc $mainSrc -releaseFolder $releaseFolder -versionFile $versionFile -buildFolder $buildFolder-outputName $outputName;
     Write-Host -ForegroundColor Green "DONE!"
