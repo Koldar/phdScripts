@@ -3,6 +3,9 @@ param (
     [string]$config = "config.ini"
 )
 
+# Update this version anytime you update this makefile
+$MAKE_VERSION = 1.0.0
+
 
 function Get-IniContent ($filePath)
 {
@@ -171,6 +174,7 @@ $versionFile=$ini["General"]["VERSION_FILE"] = ".version";
 # SCRIPT
 ###########################
 
+Write-Host -ForegroundColor Green "Windows Makefile version is ${MAKE_VERSION}";
 Write-Host -ForegroundColor Green "Making $target...";
 
 if ($target -eq "uml") {

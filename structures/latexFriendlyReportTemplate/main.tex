@@ -104,19 +104,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DOCUMENT FRONT PAGE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{Driver development for Openware Report}
+\author{Massimo Bono, Ada Bagozi}
+\date{\today}
 
-\title{}
-\author{}
-\date{%
-    \today
 
-    Version: 0.1.1
-
-    \begin{figure}
-        \centering
-        \includegraphics{src/images/logo}
-    \end{figure}
-}
 
 
 
@@ -143,7 +135,9 @@
 
 \makeglossaries
 \input{src/glossaries/glossary.tex}
+\input{src/glossaries/commons-glossary.tex}
 \input{src/glossaries/acronym.tex}
+\input{src/glossaries/commons-acronym.tex}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % MAIN DOCUMENT
@@ -156,21 +150,22 @@
     \centering
     \vfill
     {\bfseries\Large
-        Title
+        \makeatletter\@title\makeatother
         
         \vskip2cm
 
-        authors
+        \makeatletter\@author\makeatother
         
         \vskip2cm
 
-        Version
+        Version 0.1.3
         \\
     }    
     \vfill
     \includegraphics[width=0.8\textwidth]{src/images/logo}
     \vfill
     \vfill
+    Date: \makeatletter\@date\makeatother
 \end{titlepage}
 \clearpage
 
@@ -204,6 +199,7 @@
 
 \printglossary[type={terms}]
 \clearpage
+\backmatter
 
 \input{src/texs/90-bibliography.tex}
 

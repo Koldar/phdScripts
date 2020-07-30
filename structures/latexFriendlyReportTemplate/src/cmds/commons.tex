@@ -8,6 +8,12 @@
 
 % Add a reference to a section
 % param1 the label of the section
+\NewDocumentCommand{\lstref}{m}{%
+    Listing \ref{#1}%
+}
+
+% Add a reference to a section
+% param1 the label of the section
 \NewDocumentCommand{\listingref}{m}{%
     Listing \ref{#1}%
 }
