@@ -1,0 +1,71 @@
+\documentclass[a4paper,aligncovertop]{cd}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PACKAGES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% STANDARD
+
+ \usepackage{etoolbox}
+ \usepackage{subcaption}
+ \usepackage{float}
+ \usepackage{xparse}
+ \usepackage{xstring}
+ \usepackage{enumitem}
+ \usepackage{graphicx}
+ \usepackage{grffile} % https://tex.stackexchange.com/a/110518/145331
+ \usepackage{listings}
+
+% PROOF READING
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CD CORRECTION
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\onecorrection{1.0}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% MAIN DOCUMENT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\newcd
+
+% see http://texdoc.net/texmf-dist/doc/latex/cd/cd.pdf
+% the cd-rom is composed by two separate pieces of papers. The first contains the cover text while the other the splines as well as the back text.
+% - cover text: writing that will be put in the frton page fo the cd cover. This will be written on a piece of paper that will be folded once.
+% - back text: the text that will be visible in the back of the cd.
+% - spine: the height of a plastic cd cover. Usually no more than 1 cm. Such small space (0.8cmx12cm) is divided 
+% in left/center/right areas.
+
+
+\covertext{
+    \small
+    \begin{center}
+        %add text here in the front page
+        Hello World
+
+        \vspace{5pt}
+        \includegraphics[width=0.2\textwidth]{src/images/logo}
+        \vspace{5pt}
+    
+
+        \textbf{Title}
+    \end{center}
+}
+
+\backtext{
+
+}
+
+\leftspine{Author}
+\rightspine{\today}
+
+\makecover\par
+\makeback\par
+
+\end{document}
